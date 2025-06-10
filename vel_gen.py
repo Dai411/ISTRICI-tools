@@ -19,7 +19,7 @@ def interpolate_horizon(x, z, fx, lx, dx, method='linear'):
     """Interpolate horizon using specified method."""
     xi = np.arange(fx, lx + dx, dx)
     
-    # 创建方法映射
+    # Mapping Method
     method_map = {
         '1': 'linear',
         '2': 'spline',
@@ -31,7 +31,7 @@ def interpolate_horizon(x, z, fx, lx, dx, method='linear'):
         '8': 'nearest'
     }
     
-    # 获取实际使用的方法名
+    # Choose the interpolation Method
     method = method_map.get(method, method)
     
     if method == "linear":
@@ -254,7 +254,7 @@ def main():
     # === Preview? ===
     preview = input("👀 Do you want to preview the current velocity model? (y/n): ").strip().lower()
     if preview == 'y':
-        # === 展示预览图 ===
+        # === Preview of the new built velocity model ===
         x = np.arange(nx) * dx
         z = np.arange(nz) * dz
 
@@ -268,7 +268,7 @@ def main():
         plt.tight_layout()
         plt.show()
 
-    # === 是否保存 ===
+    # === Save it? ===
     save = input("💾 Save this velocity model to binary file? (y/n): ").strip().lower()
     if save == 'y':
         fname = input("Enter output filename (no extension): ").strip()
