@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Written by Lining YANG @ CNR-ISMAR, BOLOGNA, ITALY
+# Date: 2025-06-11 11:39
+# This script 'vel_gen.py' is designed to build a velocity model (binary file, float 32, matrix size: nx*nz)
+# The required input files are horizons information (horizon.dat, [z,x]), could be either interpolated or raw picked, 
+# The interpolated horizons should have the same length as nx (from the velocity vifle)
 
 import numpy as np
 import matplotlib.pyplot as plt
