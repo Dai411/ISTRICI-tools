@@ -10,7 +10,7 @@ import os
 import matplotlib.font_manager as fm # type: ignore
 import warnings
 
-# If no need chinese, ignore loading Chinese fonts part
+# If no need Chinese charcters in the preview part, ignore loading Chinese fonts part
 # === 忽略字体警告（中文字符缺失）=== Ignore font warnings (Chinese characters missing) ===
 warnings.filterwarnings("ignore", category=UserWarning) 
 
