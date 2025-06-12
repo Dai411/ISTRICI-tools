@@ -10,10 +10,11 @@ import os
 import matplotlib.font_manager as fm # type: ignore
 import warnings
 
-# === 忽略字体警告（中文字符缺失）===
-warnings.filterwarnings("ignore", category=UserWarning)
+# If no need chinese, ignore loading Chinese fonts part
+# === 忽略字体警告（中文字符缺失）=== Ignore font warnings (Chinese characters missing) ===
+warnings.filterwarnings("ignore", category=UserWarning) 
 
-# === 加载中文字体（请根据实际字体文件修改路径）===
+# === 加载中文字体 === Load Chinese fonts ===
 font_path = "/home/rock411/fonts/NotoSansCJKsc-Black.otf"
 my_font = fm.FontProperties(fname=font_path)
 
@@ -27,10 +28,11 @@ target_value = float(input("The constant velocity you want to substitute (e.g. 3
 interp_start = float(input("The start value for interpolation (e.g. 3000):\n"))
 interp_end = float(input("The end value for interpolation (e.g. 4000):\n"))
 
-#nx = 701  # 水平采样点数
-#nz = 321  # 垂向采样点数
-#dx = 100  # 水平采样间隔
-#dz = 25   # 垂向采样间隔
+# === Can set default value like this ===
+#nx = 701  # 
+#nz = 321  # 
+#dx = 100  # 
+#dz = 25   # 
 
 suffix = input("Please type the suffix of the new file:\n")
 output_filename = filename + '_interp' + suffix
@@ -125,10 +127,10 @@ while True:
     final_expr = custom_exprs.get(final_choice, None)
     break
 
-# === 获取最终插值值序列（0-1） ===
+# === Get the final interpolation value sequence (0-1) === 获取最终插值值序列（0-1） ===
 interp_func = get_function(final_choice, interp_start, interp_end, final_expr)[1]
 
-# === 插值替换逻辑 ===
+# === Interpolation replacement logic === 插值替换逻辑 ===
 for i in range(nx):
     column = vel_modified[:, i]
     indices = np.where(column == target_value)[0]
