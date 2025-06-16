@@ -8,8 +8,9 @@
 # SPDX-FileCopyrightText: 2025 Lining YANG <
 #   
 # This script performs 2D smoothing similar to Seismic Unix's smooth2
-# This script allows users to smooth 2D seismic data using a regularization approach
+# This script allows users to smooth 2D data using a regularization approach
 # that applies a first-order difference operator in both dimensions.
+#
 # It can be run in two modes:
 #   1. Command Line Interface (CLI) mode: where parameters are passed as command line arguments.
 #      Command Line Example:
