@@ -1,5 +1,5 @@
 
-# 📘 Notes: C-style vs Fortran-style Data Layout (Seismic Image Example)
+# 📘 Notes: C-style vs Fortran-style Data Layout
 
 ---
 
