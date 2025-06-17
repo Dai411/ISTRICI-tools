@@ -31,7 +31,6 @@ python smooth2.py input.bin output.bin --n1 500 --n2 300 --r1 1.0 --r2 0.5 --win
 | `--win`      | Smoothing window: `[i1_start, i1_end, i2_start, i2_end]` |
 | `--save-dir` | Directory to save smoothed results |
 | `--plot-top` | Number of top results (lowest error) to plot (default `12`) |
-| `--fortran`  | Set this flag if the input binary is Fortran-style (`column-major`) |
 
 ---
 
