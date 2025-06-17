@@ -10,6 +10,11 @@
 ```bash
 python smooth2_sweep.py <input_file> --n1 <n1> --n2 <n2> [optional arguments]
 ```
+## 📬 Example
+
+```bash
+python smooth2.py input.bin output.bin --n1 500 --n2 300 --r1 1.0 --r2 0.5 --win 100 400 50 200 --efile error.txt --plot --save-plot comparison.png
+```
 
 ### Required Arguments
 
@@ -21,8 +26,8 @@ python smooth2_sweep.py <input_file> --n1 <n1> --n2 <n2> [optional arguments]
 
 | Argument | Description |
 |----------|-------------|
-| `--r1-range` | Range of smoothing parameters in the 1st dimension (default `[0, 5, 10, 15]`) |
-| `--r2-range` | Range of smoothing parameters in the 2nd dimension (default `[0, 5, 10, 15]`) |
+| `--r1-range` | Range of smoothing parameters in the 1st dimension |
+| `--r2-range` | Range of smoothing parameters in the 2nd dimension |
 | `--win`      | Smoothing window: `[i1_start, i1_end, i2_start, i2_end]` |
 | `--save-dir` | Directory to save smoothed results |
 | `--plot-top` | Number of top results (lowest error) to plot (default `12`) |
@@ -82,9 +87,3 @@ The tool automatically selects the top `N` best combinations (lowest error) and 
 Each group contains 3 subplots and is arranged in rows for easy comparison.
 
 ---
-
-## 📬 Example
-
-```bash
-python smooth2_sweep.py data.bin --n1 321 --n2 701 --r1-range 0 5 10 15 --r2-range 0 5 10 15 --plot-top 12
-```
