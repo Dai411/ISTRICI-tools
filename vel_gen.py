@@ -144,10 +144,17 @@ def main():
     background = float(input("Enter background velocity (default above first horizon): "))
 
     vel_model = np.full((nz, nx), background, dtype=np.float32)
-
-    num_layers = int(input("How many horizons do you want to insert? "))
+ 
+    while True:
+        num_layers_input = input("How many horizons do you want to insert? ")
+        if num_layers_input.isdigit():
+            num_layers = int(num_layers_input)
+            break
+        else:
+            print("❌ Please enter a valid integer for the number of horizons.")
+    
     horizons = []
-
+  
     for layer in range(num_layers):
         print(f"--- Horizon {layer+1} ---")
         fname = input("Enter horizon filename: ").strip()
