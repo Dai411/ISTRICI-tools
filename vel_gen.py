@@ -97,11 +97,12 @@ def preview_interp_functions(v_start, v_end, selected_types=None):
     
     plt.figure(figsize=(10, 6))
     for name, func in functions.items():
-        plt.plot(x, func(x), label=name, linewidth=2)
+        plt.plot(func(x), x, label=name, linewidth=2)
     
     plt.title("Interpolation Function Preview")
-    plt.xlabel("Normalized depth")
-    plt.ylabel("Velocity (m/s)")
+    plt.xlabel("Velocity (m/s)")
+    plt.ylabel("Normalized depth")
+    plt.gca().invert_yaxis()  
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
