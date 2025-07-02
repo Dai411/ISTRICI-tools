@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt # type: ignore
 import argparse
 
-def plot_comparison(original, smoothed, n1, n2):
+def plot_comparison(original, smoothed, n1, n2, orig_filename="", smoothed_filename=""):
     """
     Plot comparison of original vs smoothed data with error analysis
     
@@ -37,13 +37,13 @@ def plot_comparison(original, smoothed, n1, n2):
     fig, axs = plt.subplots(1, 3, figsize=(18, 5))
 
     im0 = axs[0].imshow(original_plot, extent=extent, cmap='viridis', aspect='auto')
-    axs[0].set_title("Original Data")
+    axs[0].set_title(f"Original Data\n{orig_filename}")
     axs[0].set_xlabel("Trace Index (n2)")
     axs[0].set_ylabel("Depth Index (n1)")
     fig.colorbar(im0, ax=axs[0])
 
     im1 = axs[1].imshow(smoothed_plot, extent=extent, cmap='viridis', aspect='auto')
-    axs[1].set_title("Processed Data")
+    axs[1].set_title(f"Processed Data\n{smoothed_filename}")
     axs[1].set_xlabel("Trace Index (n2)")
     axs[1].set_ylabel("Depth Index (n1)")
     fig.colorbar(im1, ax=axs[1])
@@ -108,7 +108,7 @@ def interactive_mode():
     
     # pass the data directly to the plotting function
     print("\n🖌️ Generating comparison plot...")
-    plot_comparison(orig_data, proc_data, n1, n2)
+    plot_comparison(orig_data, proc_data, n1, n2, orig_filename=orig_file, smoothed_filename=proc_file)
     
     print("\n✅ Comparison complete!")
 
