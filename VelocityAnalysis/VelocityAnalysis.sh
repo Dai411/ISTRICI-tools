@@ -24,7 +24,13 @@
 # Usage:
 #   ./seismic_velocity_analysis.sh
 # =============================================================================
-
+# Original Author: Umberta Tinivella, OGS, Udine, Italy
+# https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/VELOCITANALISYS
+# Modified by: Lining YANG, CNR-ISMAR Bologna
+# The previous tool is a shell script combined with two Fortran .f scripts
+# The Fortran script is transfered to shell functions in this version
+# There is no apparent code performance after using shell fuctions here
+#
 # -----------------------------------------------------------------------------
 # Initialize environment
 # -----------------------------------------------------------------------------
