@@ -41,7 +41,7 @@ echo "================================="
 rm -f mpick.dat deltap.txt
 cp vfile vfile_old  # Backup original velocity file
 b2a <vfile n1=1 >vfile.a # Convert binary to ASCII for easier processing
-# vfile.a will be used for UPDATEvelocity2marinedata
+# vfile.a will be used for UpdateV2M.sh
 # -----------------------------------------------------------------------------
 # Set analysis parameters (hardcoded values)
 # -----------------------------------------------------------------------------
