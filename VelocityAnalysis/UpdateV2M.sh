@@ -17,6 +17,7 @@
 #   - Comprehensive error handling
 #   - Water bottom file validation
 #
+# This script should be used after ./VelocityAnalysis.sh
 # Usage: ./UpdateV2M.sh
 # =============================================================================
 
