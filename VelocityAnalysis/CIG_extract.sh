@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# Script Name: extract_cdp.sh
+# Script Name: CIG_extract.sh
 # Description: Extracts CDP traces from seismic data files and creates
 #              output files with simplified names. Supports progress animation.
 #
