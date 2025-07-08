@@ -211,7 +211,7 @@ paste vfile_old.ascii vfile_new.ascii | awk '
 
 ## Contributors
 - **Lining YANG** (CNR-ISMAR Bologna) - Principal developer
-- [Add contributor guidelines here]
+- 
 
 ## License
 BSD 3-Clause License
