@@ -299,51 +299,61 @@ while [[ $cdp -le $cdpmax ]]; do
     # Section 4: Velocity Analysis per Pick
     # ---------------------------------------------------------
     echo "Starting velocity analysis for $num_picks picks"
-    
+
     # Initialize perturbation file
     > deltap.txt  # Create empty file
-    
+
     # Process each pick
     for ((pick_idx=1; pick_idx<=num_picks; pick_idx++)); do
-        echo "Processing pick $pick_idx/$num_picks"
-        
-        # Create pick index file
-        echo $pick_idx > nciclo.txt
-        echo $cdp >> nciclo.txt
-        
-        # Generate CIG parameters
-        faicigpar
-        sed "s/ //g" cig.txt > cig.par
-        
-        # Clean previous run files
-        rm -f dfile dzfile deltap.$cdp deltap.tmp
-        
-        # Calculate depth derivatives
-        dzdv < infile par=cig.par nx=1 nz=$nzmig fx=$cdp fz=$fz \
-            dx=$d2mig dz=$dzmig afile=afile dfile=dfile \
-            off0=$absoff0 noff=$noff doff=$doff nxw=0 nzw=0 > dzfile
-        
-        # Check dzdv execution
-        if [[ $? -ne 0 || ! -s dfile ]]; then
-            echo "ERROR: dzdv failed for CDP $cdp, pick $pick_idx"
-            exit 1
-        fi
-        
-        # Estimate velocity perturbation
-        velpert < dfile dzfile=dzfile ncip=1 noff=$noff moff=$noff > "deltap.$cdp"
-        
-        # Check velpert execution
-        if [[ $? -ne 0 || ! -s "deltap.$cdp" ]]; then
-            echo "ERROR: velpert failed for CDP $cdp, pick $pick_idx"
-            exit 1
-        fi
-        
-        # Extract delta values
-        sed "2,3d" "deltap.$cdp" > deltap.tmp 
-        awk '{print $6}' deltap.tmp >> deltap.txt
-        
-        # Clean intermediate files
-        rm dzfile
+        pick_success=false
+        while ! $pick_success; do
+            echo "Processing pick $pick_idx/$num_picks"
+            
+            # Create pick index file
+            echo $pick_idx > nciclo.txt
+            echo $cdp >> nciclo.txt
+            
+            # Generate CIG parameters
+            faicigpar
+            sed "s/ //g" cig.txt > cig.par
+            
+            # Clean previous run files
+            rm -f dfile dzfile deltap.$cdp deltap.tmp
+            
+            # Calculate depth derivatives
+            dzdv < infile par=cig.par nx=1 nz=$nzmig fx=$cdp fz=$fz \
+                dx=$d2mig dz=$dzmig afile=afile dfile=dfile \
+                off0=$absoff0 noff=$noff doff=$doff nxw=0 nzw=0 > dzfile
+            
+            # Check dzdv execution
+            if [[ $? -ne 0 || ! -s dfile ]]; then
+                echo "ERROR: dzdv failed for CDP $cdp, pick $pick_idx"
+                echo "Please re-pick for this CDP and pick index."
+                read -p "Press Enter after re-picking (edit mpicks.$cdp as needed)..."
+                continue
+            fi
+            
+            # Estimate velocity perturbation
+            velpert < dfile dzfile=dzfile ncip=1 noff=$noff moff=$noff > "deltap.$cdp"
+            
+            # Check velpert execution
+            if [[ $? -ne 0 || ! -s "deltap.$cdp" ]]; then
+                echo "ERROR: velpert failed for CDP $cdp, pick $pick_idx"
+                echo "Please re-pick for this CDP and pick index."
+                read -p "Press Enter after re-picking (edit mpicks.$cdp as needed)..."
+                continue
+            fi
+
+            # --- extract delta values ---
+            sed "2,3d" "deltap.$cdp" > deltap.tmp 
+            awk '{print $6}' deltap.tmp >> deltap.txt
+            # Check if the $6 colum is the value of delta v?
+
+            # Clean intermediate files
+            rm dzfile
+
+            pick_success=true
+        done
     done
     
     # ---------------------------------------------------------
