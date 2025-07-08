@@ -119,6 +119,15 @@ Integrates residual velocities into existing model with water bottom correction
 | `velres.bin` | Residual velocity grid |
 | `vfile.updated` | ASCII updated model |
 
+
+## 4. Lite R-parameters Preview (`show_r_parameter.sh`)  
+### Purpose  
+This script extracts a specific Common Depth Point (CDP) gather from a seismic SU (Seismic Unix) dataset, 
+performs r-parameter scanning to analyze velocity errors, and displays the results graphically using SU visualization tools.  
+This lite tool is compiled in the `VelocityAnalysis.sh`.   
+
+
+
 ---
 
 ## Full Workflow Execution
