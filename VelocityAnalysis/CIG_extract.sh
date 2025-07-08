@@ -5,7 +5,7 @@
 # Version: 1.1
 # Author: Lining YANG, CNR-ISMAR Bologna
 # Date: 2025-07-08 20:00
-
+#
 # Description: Extracts CDP traces from seismic data files and creates
 #              output files with simplified names. Supports progress animation.
 #
