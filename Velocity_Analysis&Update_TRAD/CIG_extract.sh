@@ -80,10 +80,10 @@ process_filename() {
     fi
     
     # Remove the file extension if it exists
-    if [[ "$base_name" =~ ^(.*)_complete([0-9]+)(\..*)?$ ]]; then
+    if [[ "$base_name" =~ ^(.*)_complete(_?.+)$ ]]; then
         local prefix="${BASH_REMATCH[1]}"
-        local number="${BASH_REMATCH[2]}"
-        base_name="${prefix}_${number}"
+        local suffix="${BASH_REMATCH[2]}"
+        base_name="${prefix}${suffix}"
     else
         base_name="${default_prefix}_"
     fi
