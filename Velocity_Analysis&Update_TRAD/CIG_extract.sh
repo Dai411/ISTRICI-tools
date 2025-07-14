@@ -1,10 +1,7 @@
 #!/bin/bash
+
 # ==============================================================================
-# Script Name: CIG_extract.sh
-# Version: 1.1
-# Author: Lining YANG, CNR-ISMAR Bologna
-# Date: 2025-07-08 20:00
-#
+# Script Name: extract_cdp.sh
 # Description: Extracts CDP traces from seismic data files and creates
 #              output files with simplified names. Supports progress animation.
 #
@@ -73,6 +70,16 @@ process_filename() {
 
     local base_name=$(basename "$filename")
 
+    # Special cases for known filenames
+    if [[ "$base_name" == "kd.data_complete" ]]; then
+        echo "kd.data"
+        return
+    elif [[ "$base_name" == "outfile1_complete" ]]; then
+        echo "outfile1"
+        return
+    fi
+    
+    # Remove the file extension if it exists
     if [[ "$base_name" =~ ^(.*)_complete([0-9]+)(\..*)?$ ]]; then
         local prefix="${BASH_REMATCH[1]}"
         local number="${BASH_REMATCH[2]}"
