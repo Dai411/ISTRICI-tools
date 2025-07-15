@@ -14,6 +14,9 @@ and displays it as an interactive plot. Users can:
 2. Support both text and binary input files
 3. Customize plot dimensions interactively
 
+This script can do the same command like (installed with SeismicUnix):
+a2b <velres.dat n1=1 | ximage n1=321 n2=701 legend=1
+
 Usage:
 1. Run the script: python plot_velres.py
 2. Enter file name and dimensions when prompted
