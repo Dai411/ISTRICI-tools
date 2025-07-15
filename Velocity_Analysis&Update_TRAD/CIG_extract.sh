@@ -1,22 +1,28 @@
 #!/bin/bash
-
 # ==============================================================================
-# Script Name: extract_cdp.sh
+# CIG extraction script
+# Version:   2.0 
+# Author:    Lining YANG, CNR-ISMAR Bologna
+# Date:      2025-07-05 20:00
+# Modified:  2025-07-15
+# License:   BSD-3-Clause
+# ==============================================================================
 # Description: Extracts CDP traces from seismic data files and creates
 #              output files with simplified names. Supports progress animation.
 #
 # Usage:
-#   ./extract_cdp.sh -k <kdfile> -o <outfile1> -s <step> -f <first_cdp> [-l <last_cdp>]
+#   ./CIG_extract.sh -f <first_cdp> -s <step> [-k <kdfile>] [-o <outfile1>] [-l <last_cdp>]
 #
 # Parameters:
-#   -k  Path to the 'kd.data_complete' file
-#   -o  Path to the 'outfile1_complete' file
-#   -f  First CDP to extract
-#   -s  CDP step interval
-#   -l  Last CDP to extract (optional; if omitted, all remaining CDPs will be extracted)
+#   -f  First CDP to extract (required)
+#   -s  CDP step interval (required)
+#   -k  Path to the 'kd.data_complete' file (optional, defaults to 'kd.data_complete')
+#   -o  Path to the 'outfile1_complete' file (optional, defaults to 'outfile1_complete')
+#   -l  Last CDP to extract (optional)
 #
 # Example:
-#   ./CIG_extract.sh -k kd.data_complete -o outfile1_complete -f 100 -s 5 -l 300
+#   ./CIG_extract.sh -f 1000 -s 500 
+#   ./CIG_extract.sh -k custom_kd.data -o custom_out.data -f 1000 -s 500 -l 3000
 # ==============================================================================
 
 # Check if ANSI escape sequences are supported
@@ -27,12 +33,22 @@ supports_ansi() {
 
 # Default values
 cdplast=""
+kdfile="kd.data_complete"
+outfile1="outfile1_complete"
+using_default_k=true
+using_default_o=true
 
 # Parse command-line arguments
 while getopts "k:o:f:s:l:h" opt; do
     case $opt in
-        k) kdfile="$OPTARG" ;;
-        o) outfile1="$OPTARG" ;;
+        k) 
+            kdfile="$OPTARG"
+            using_default_k=false
+            ;;
+        o) 
+            outfile1="$OPTARG"
+            using_default_o=false
+            ;;
         f) cdpin="$OPTARG" ;;
         s) step="$OPTARG" ;;
         l) cdplast="$OPTARG" ;;
@@ -52,14 +68,39 @@ while getopts "k:o:f:s:l:h" opt; do
 done
 
 # Validate required arguments
-if [[ -z "$kdfile" || -z "$outfile1" || -z "$cdpin" || -z "$step" ]]; then
-    echo "Error: Missing required arguments."
+if [[ -z "$cdpin" || -z "$step" ]]; then
+    echo "Error: Missing required arguments -f and/or -s."
     grep '^#' "$0" | head -n 20
     exit 1
 fi
 
-if [[ ! -f "$kdfile" || ! -f "$outfile1" ]]; then
-    echo "Error: One or both input files do not exist!"
+# Enhanced file existence checks with helpful messages
+error_occurred=false
+
+# Check KD.DATA file
+if [[ ! -f "$kdfile" ]]; then
+    if [[ "$using_default_k" == true ]]; then
+        echo "Error: Default KD.DATA file '$kdfile' not found." >&2
+        echo "       Please specify a valid file using the -k parameter." >&2
+    else
+        echo "Error: Specified KD.DATA file '$kdfile' not found." >&2
+    fi
+    error_occurred=true
+fi
+
+# Check outfile1 file
+if [[ ! -f "$outfile1" ]]; then
+    if [[ "$using_default_o" == true ]]; then
+        echo "Error: Default outfile1 file '$outfile1' not found." >&2
+        echo "       Please specify a valid file using the -o parameter." >&2
+    else
+        echo "Error: Specified outfile1 file '$outfile1' not found." >&2
+    fi
+    error_occurred=true
+fi
+
+# Exit if any files are missing
+if [[ "$error_occurred" == true ]]; then
     exit 1
 fi
 
@@ -121,15 +162,6 @@ show_progress() {
             sleep $delay
         done
         printf "✓\n"
-    fi
-}
-
-# Function: Get file size (not currently used, kept for future use)
-get_file_size() {
-    if [[ -f "$1" ]]; then
-        du -b "$1" | awk '{print $1}'
-    else
-        echo 0
     fi
 }
 
