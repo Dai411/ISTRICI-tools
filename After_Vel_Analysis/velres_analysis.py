@@ -49,6 +49,25 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+import argparse
+
+def parse_args():
+    """Parse command-line arguments"""
+    parser = argparse.ArgumentParser(
+        description="Comprehensive Velocity Field Analysis Tool",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("-f", "--file", type=str, help="Path to input file (.txt/.dat/.bin)")
+    parser.add_argument("-nx", type=int, default=701, help="Number of columns (x-dimension)")
+    parser.add_argument("-nz", type=int, default=321, help="Number of rows (z-dimension)")
+    parser.add_argument("-t", "--threshold", type=float, default=3.0,
+                       help="Sigma threshold for outlier detection")
+    parser.add_argument("-s", "--sample", type=int, default=50,
+                       help="Sampling interval for profile plots")
+    parser.add_argument("--save", type=str, help="Save outlier report to file")
+    parser.add_argument("--no-interactive", action="store_true",
+                       help="Disable interactive prompts (use CLI args only)")
+    return parser.parse_args()
 
 def read_velocity_file(file_path, nx=701, nz=321):
     """Read velocity file with robust error handling"""
@@ -234,24 +253,34 @@ def save_report(outliers, filename='report.txt'):
         print(f"Failed to save report: {str(e)}")
 
 if __name__ == "__main__":
-    # User inputs with error handling
-    file_path = input("Enter file path (.txt/.dat/.bin): ").strip()
-    try:
-        nx = int(input("Enter nx (default 701): ") or 701)
-    except Exception:
-        nx = 701
-    try:
-        nz = int(input("Enter nz (default 321): ") or 321)
-    except Exception:
-        nz = 321
-    try:
-        sigma_threshold = float(input("Enter outlier threshold (default 3σ): ") or 3)
-    except Exception:
-        sigma_threshold = 3
-    try:
-        sample_interval = int(input("Enter sampling interval (default 50): ") or 50)
-    except Exception:
-        sample_interval = 50
+
+    args = parse_args()
+
+    if args.no_interactive or args.file:
+        file_path = args.file
+        nx = args.nx
+        nz = args.nz
+        sigma_threshold = args.threshold
+        sample_interval = args.sample
+    else:
+        # User inputs with error handling
+        file_path = input("Enter file path (.txt/.dat/.bin): ").strip()
+        try:
+            nx = int(input("Enter nx (default 701): ") or 701)
+        except Exception:
+            nx = 701
+        try:
+            nz = int(input("Enter nz (default 321): ") or 321)
+        except Exception:
+            nz = 321
+        try:
+            sigma_threshold = float(input("Enter outlier threshold (default 3σ): ") or 3)
+        except Exception:
+            sigma_threshold = 3
+        try:
+            sample_interval = int(input("Enter sampling interval (default 50): ") or 50)
+        except Exception:
+            sample_interval = 50
 
     print("\n" + "=" * 50)
     velocity = read_velocity_file(file_path, nx, nz)
@@ -326,9 +355,12 @@ if __name__ == "__main__":
             print("\nTop 5 outliers:")
             for o in sorted(outliers, key=lambda x: abs(x['deviation']), reverse=True)[:5]:
                 print(f"[Row {o['row']:3d}, Col {o['col']:3d}] = {o['value']:.4f} ({o['deviation']:+.1f}σ)")
-
-            if input("\nSave outlier report? (y/n): ").lower() == 'y':
-                report_name = input("Enter filename (default report.txt): ") or 'report.txt'
-                save_report(outliers, report_name)
+            if args.save:  
+                save_report(outliers, args.save)
+                print(f"Outlier report saved to {args.save} (CLI argument)")
+            elif not args.no_interactive:  
+                if input("\nSave outlier report? (y/n): ").lower() == 'y':
+                    report_name = input("Enter filename (default report.txt): ") or 'report.txt'
+                    save_report(outliers, report_name)
 
     print("=" * 50)
