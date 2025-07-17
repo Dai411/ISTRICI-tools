@@ -78,8 +78,9 @@ def plot_comparison(original, smoothed, n1, n2, orig_filename="", smoothed_filen
     # Reshape with Fortran-order
     original_plot = np.reshape(original.flatten(), (n1, n2), order='F')
     smoothed_plot = np.reshape(smoothed.flatten(), (n1, n2), order='F')
-    error = original_plot - smoothed_plot
-    
+    # error = original_plot - smoothed_plot
+    error = smoothed_plot - original_plot  # Revised：Processed - Original
+
     # Calculate error metrics
     abs_error = np.abs(error)
     avg_error = np.mean(abs_error)
@@ -114,8 +115,9 @@ def plot_comparison(original, smoothed, n1, n2, orig_filename="", smoothed_filen
     # Plot difference
     im2 = axs[2].imshow(error, extent=extent, cmap='seismic', aspect='auto',
                         vmin=-max_error, vmax=max_error)
-    axs[2].set_title("Difference (Original - Processed)")
-    axs[2].set_xlabel("Trace Index (n2)")
+    axs[2].set_title(("Difference (Processed - Original)\n"
+                 "Red: Processed > Original\n"
+                 "Blue: Processed < Original"))
     axs[2].set_ylabel("Depth Index (n1)")
     fig.colorbar(im2, ax=axs[2])
 
