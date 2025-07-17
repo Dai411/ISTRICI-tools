@@ -120,7 +120,9 @@ def main():
         plt.colorbar()
         plt.subplot(1, 3, 3)
         plt.imshow(diff, cmap='bwr', aspect='auto', vmin=-vmax, vmax=vmax)
-        plt.title('Difference = Substituted - Original')
+        plt.title('Difference = Substituted - Original \n'
+                 "Red: Substituted > Original\n"
+                 "Blue: Substituted < Original")
         plt.colorbar()
         plt.tight_layout()
         plt.show()
