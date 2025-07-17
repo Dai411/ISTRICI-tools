@@ -1,3 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+velres_analysis.py - Comprehensive Velocity Field Analysis Tool
+
+Author: Lining Yang @ CNR-ISMAR, BOLOGNA, ITALY
+Date: 2025-07-17
+Last Modified: 2025-07-17
+License: BSD-3-Clause
+
+Description:
+    This script performs comprehensive analysis of velocity field data (ASCII text or binary format),
+    with the following capabilities:
+      1. Robust file reading for both text and binary formats
+      2. Statistical analysis with outlier detection
+      3. Interactive heatmap visualization with colormap switching
+      4. Vertical and horizontal profile plotting
+      5. Automatic detection of high-variation regions
+      6. Detailed reporting of data statistics and outliers
+
+    Data is assumed to be Fortran-order (column-major) with dimensions (nz, nx).
+    That is, the file is written as: for ix in 1..nx: for iz in 1..nz: value
+
+CLI Usage Example:
+    python3 velres_analysis.py
+    # Follow interactive prompts for file path and parameters
+
+    Alternative direct execution:
+    python3 velres_analysis.py -f velres.dat -nx 701 -nz 321 -t 3 -s 50
+
+Interactive Features:
+    - Press 'r' to cycle through RGB colormaps (jet, viridis, plasma, inferno)
+    - Press 'h' to cycle through HSV colormaps (hsv, twilight, twilight_shifted)
+    - Interactive zoom regions automatically detected based on data variation
+
+Analysis Features:
+    - Global and clean data statistics
+    - Outlier detection with configurable sigma threshold
+    - Data quality metrics (non-uniform columns percentage)
+    - Option to save outlier reports
+
+Output:
+    - Interactive matplotlib figures
+    - Detailed console statistics report
+    - Optional text report of outliers
+"""
+
 import numpy as np
 import os
 import matplotlib.pyplot as plt
