@@ -2,9 +2,10 @@
 # =============================================================================
 # Mini Tool: Display r-parameter Analysis for a Specific CDP Gather
 # Author: Lining YANG, CNR-ISMAR Bologna
-# Version: 1.0
+# Version: 1.2
 # License: BSD 3-Clause License
 # Date: 2025-07-08 19：47
+# Last Modified: 2025-07-17 12:10
 #
 # Description:
 #   This script extracts a specific Common Depth Point (CDP) gather from a seismic
@@ -23,7 +24,7 @@
 #
 # Arguments:
 #   CDP          : The Common Depth Point number to analyze (integer).
-#   Input SU File: The input seismic data file in SU format.
+#   Input SU File: The input seismic data file in SU format. Default is "kd.data".
 #   --save       : Optional flag to automatically save picking results without prompting.
 #
 # Example:
@@ -41,7 +42,6 @@
 # Contact:
 #   For issues or improvements, please contact li-ning.yang@outlook.com
 # =============================================================================
-
 
 set -euo pipefail
 
@@ -61,6 +61,19 @@ usage() {
     exit 1
 }
 
+# Function to check pick file
+check_pickfile() {
+    local pickfile=$1
+    if [ -s "$pickfile" ]; then
+        echo "[INFO] Picks saved to $pickfile"
+        echo "Picked points:"
+        cat "$pickfile"
+    else
+        echo "[WARNING] No valid picks were made"
+        rm -f "$pickfile"
+    fi
+}
+
 # Check arguments
 if [ $# -lt 2 ] || [ $# -gt 3 ]; then
     usage
@@ -76,11 +89,13 @@ DR=0.01       # r sampling interval
 FR=-0.25      # Starting r-value
 DZRATIO=2     # Depth ratio for scanning
 
-# Create temp file
+# Create temp files
 TMPFILE=$(mktemp /tmp/tmp_cdp_${CDP}_XXXXXX.su)
+OUTFILE="r_scan_${CDP}.su"
+PICKFILE="r_picks_${CDP}.txt"
 
 # Trap to clean up on exit
-trap "rm -f $TMPFILE" EXIT
+trap "rm -f $TMPFILE $OUTFILE" EXIT  # Don't auto-delete PICKFILE as it's user data
 
 # Step 1: Extract CDP gather
 echo "[INFO] Extracting CDP=$CDP from $INPUT_FILE ..."
@@ -91,16 +106,20 @@ if [ ! -s "$TMPFILE" ]; then
     exit 1
 fi
 
-# Step 2: Generate r-scan
+# Step 2: Generate CIG gather & r-scan
+echo "[INFO] Displaying CIG gather for CDP $CDP"
+suxwigb < "$TMPFILE" perc=98 \
+    label1="Depth (m)" label2="Offset (m)" \
+    title="CIG $CDP" key=offset wbox=700 hbox=500 & 
+
 echo "[INFO] Performing r-scan analysis..."
-OUTFILE="r_scan_${CDP}.su"
 surelan < "$TMPFILE" dzratio=$DZRATIO nr=$NR dr=$DR fr=$FR | \
     suchw key1=dt key2=d1 b=1000 > "$OUTFILE"
 
 # Step 3: Display summary
 END_R=$(echo "scale=3; $FR + $NR * $DR" | bc)
 
-echo
+#echo
 echo "=============================================="
 echo "r-parameter Analysis for CDP: $CDP"
 echo "----------------------------------------------"
@@ -112,33 +131,46 @@ echo "  - r>0: velocity too low (increase needed)."
 echo "  - r<0: velocity too high (decrease needed)."
 echo "=============================================="
 
-# Step 4: Display with supsimage
+# Step 4: Display r-scan results
+echo "[INFO] Displaying r-scan results..."
 suximage < "$OUTFILE" perc=98 \
     title="r-scan for CDP $CDP" \
     label1="Depth (m)" label2="r-parameter" \
     grid1=1 grid2=1 \
     legend=1 cmap=hsv2 \
-    f2=$FR d2=$DR
+    f2=$FR d2=$DR &
 
-    # f2=$FR set the start of the r-parameter; d2=$DR set the step of the r-parameter
-
-# Step 5: Save picks if requested
+# Step 5: Handle picking
 if [ "$SAVE_MODE" = "--save" ]; then
-    PICKFILE="r_picks_$CDP.txt"
     echo "[INFO] Saving r-parameter picks to $PICKFILE..."
     suximage < "$OUTFILE" perc=98 mpicks="$PICKFILE" \
-        title="Pick r-parameter for CDP $CDP" cmap=hsv2 legend=1
-    echo "[INFO] Picks saved to $PICKFILE"
+        title="RIGHT-click to pick, MIDDLE-click to finish" cmap=hsv2 legend=1 \
+        label1="Depth (m)" label2="r-parameter" \
+        grid1=1 grid2=1
+    check_pickfile "$PICKFILE"
 else
-    echo
-    read -p "Do you want to save picks interactively? (y/n): " SAVE_ANSWER
-    if [ "$SAVE_ANSWER" = "y" ]; then
-        PICKFILE="r_picks_$CDP.txt"
-        suximage < "$OUTFILE" perc=98 mpicks="$PICKFILE" \
-            title="Pick r-parameter for CDP $CDP" cmap=hsv2 legend=1
-        echo "[INFO] Picks saved to $PICKFILE"
+    # New logic: Show both windows first, then ask after they close
+    echo "[INFO] Display windows opened - interact with them first"
+    echo "  - In r-scan window: RIGHT-click to pick, 's' to store temporarily"
+    echo "  - Close both windows when done to proceed"
+    
+    # Wait for windows to close
+    wait
+    
+    # Check if any picks were made (SU stores picks in memory before writing)
+    if [[ -f "$PICKFILE" ]]; then
+        echo
+        read -p "Do you want to save the picks you made? (y/N): " SAVE_ANSWER
+        if [[ "$SAVE_ANSWER" =~ ^[Yy]$ ]]; then
+            echo "[INFO] Picks saved to $PICKFILE"
+            echo "Picked points:"
+            cat "$PICKFILE"
+        else
+            rm -f "$PICKFILE"
+            echo "[INFO] Picks discarded"
+        fi
     else
-        echo "[INFO] Picks not saved."
+        echo "[INFO] No picks were made during this session"
     fi
 fi
 
