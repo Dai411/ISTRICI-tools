@@ -118,6 +118,7 @@ def plot_comparison(original, smoothed, n1, n2, orig_filename="", smoothed_filen
     axs[2].set_title(("Difference (Processed - Original)\n"
                  "Red: Processed > Original\n"
                  "Blue: Processed < Original"))
+    axs[2].set_xlabel("Trace Index (n2)")
     axs[2].set_ylabel("Depth Index (n1)")
     fig.colorbar(im2, ax=axs[2])
 
