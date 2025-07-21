@@ -4,6 +4,7 @@
 # Version: 4.0 (Pure Shell Implementation)
 # Author: Lining YANG, CNR-ISMAR Bologna
 # Date: 2025-07-01
+# Last Modified: 2025-07-21
 # 
 # Description: 
 #   This script performs residual moveout analysis on seismic Common Image Gathers (CIGs).
@@ -24,18 +25,23 @@
 # Usage:
 #   ./seismic_velocity_analysis.sh
 # =============================================================================
-# Original Author: Umberta Tinivella, OGS, Udine, Italy
-# https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/VELOCITANALISYS
-# Modified by: Lining YANG, CNR-ISMAR Bologna
-# The previous tool is a shell script combined with two Fortran .f scripts
-# The Fortran script is transfered to shell functions in this version
-# There is no apparent code performance after using shell fuctions here
-#
+
 # -----------------------------------------------------------------------------
 # Initialize environment
 # -----------------------------------------------------------------------------
 echo "Starting Seismic Velocity Analysis"
 echo "================================="
+
+# Check for the pevious outputfile "residutat.dat"
+if [[ -f "residuotot.dat" ]]; then
+    read -p "residuotot.dat already exists. Overwrite? (y/n) [n]: " overwrite
+    if [[ "$overwrite" != "y" ]]; then
+        echo "Please rename or move the existing residuotot.dat file and restart."
+        exit 1
+    fi
+    # Clear or Delete the existing file
+    > residuotot.dat
+fi
 
 # Clean previous run files
 rm -f mpick.dat deltap.txt
@@ -46,62 +52,86 @@ b2a <vfile n1=1 >vfile.a # Convert binary to ASCII for easier processing
 # Set analysis parameters (hardcoded values)
 # -----------------------------------------------------------------------------
 # Migration and velocity grid parameters
-echo "migration and velocity parameters:"
-echo "nz,dz,fz?"
-read nz # Number of depth samples
-read dz # Depth sampling interval (m)
-read fz # Starting depth (m)
+#echo "migration and velocity parameters:"
+#echo "nz,dz,fz?"
+#read nz # Number of depth samples
+#read dz # Depth sampling interval (m)
+#read fz # Starting depth (m)
 
-echo "nx,dx,fx?"
-read nx # Number of x-position samples
-read dx # X sampling interval (m)
-read fx # Starting x-position (m)
+#echo "nx,dx,fx?"
+#read nx # Number of x-position samples
+#read dx # X sampling interval (m)
+#read fx # Starting x-position (m)
 
 # Common Image Gather (CIG) parameters
-echo "near offset (absolute value in m) in the CIGs (kd.data and outfile1)"
-read absoff0    # Near offset (m) - abosulte value
-echo "number of offsets in the CIGs"
-read noff       # Number of offsets in the CIGs
-echo "offset increment (absolute value) in the CIGs"
-read doff       # Offset sampling interval (m)
+#echo "near offset (absolute value in m) in the CIGs (kd.data and outfile1)"
+#read absoff0    # Near offset (m) - abosulte value
+#echo "number of offsets in the CIGs"
+#read noff       # Number of offsets in the CIGs
+#echo "offset increment (absolute value) in the CIGs"
+#read doff       # Offset sampling interval (m)
 
 # Velocity analysis parameters
-echo "min, max and CIG step at which you want to performe the velocity analyis"
-echo "Attention: the step must be a multiple of the step used in the CIGextraction!"
-read cdpmin # Starting CDP
-read cdpmax # Ending CDP
-read dcdp   # CDP step
+#echo "min, max and CIG step at which you want to performe the velocity analyis"
+#echo "Attention: the step must be a multiple of the step used in the CIGextraction!"
+#read cdpmin # Starting CDP
+#read cdpmax # Ending CDP
+#read dcdp   # CDP step
 
 # Seismic data header parameters (from kd.data)
-echo "insert the values: ns, d1 e d2 in the trace header of the kd.data"
-echo "Obtained from the command $ surange<kd.data"
-read nzmig  # Number of samples in trace
-read dzmig  # Depth sampling in migrated data (m)
-read d2mig  # Trace header parameter
+#echo "insert the values: ns, d1 e d2 in the trace header of the kd.data"
+#echo "Obtained from the command $ surange<kd.data"
+#read nzmig  # Number of samples in trace
+#read dzmig  # Depth sampling in migrated data (m)
+#read d2mig  # Trace header parameter
 
 # ========= Preset parameters for the analysis ========= 
-# Parameters can be preset here, remeber to command above
-#nz=321       
-#dz=25        
-#fz=0         
-#nx=701       
-#dx=100       
-#fx=0         
-#absoff0=3627 
-#noff=138     
-#doff=25      
-#cdpmin=6000 
-#cdpmax=65000 
-#dcdp=500     
-#nzmig=1601   
-#dzmig=5      
-#d2mig=50     
+nz=321       
+dz=25        
+fz=0         
+nx=701       
+dx=100       
+fx=0         
+absoff0=3627 
+noff=138     
+doff=25      
+cdpmin=15000 
+cdpmax=25000 
+dcdp=500     
+nzmig=1601   
+dzmig=5      
+d2mig=50     
 # ========================================================
 echo "file v.par generated with the parameters: nz,dz,fz,nx,dx,fx,cdpmin,cdpmx,dcdp"
 # Create velocity grid parameters file
 # echo "$nz $dz $fz $nx $dx $fx $cdpmin $cdpmax $dcdp" > v.par # Data in a single line
-printf "%s\n" "$nz" "$dz" "$fz" "$nx" "$dx" "$fx" "$cdpmin" "$cdpmax" "$dcdp" > v.par # Data in multiple lines
+printf "%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n" \
+    "$nz" "$dz" "$fz" "$nx" "$dx" "$fx" "$cdpmin" "$cdpmax" "$dcdp" > v.par # Data in multiple lines
+validate_vpar
 echo "v.par file created with the above parameters"
+
+# -----------------------------------------------------------------------------
+# Utility Functions
+# -----------------------------------------------------------------------------
+validate_vpar() {
+    local lines=$(wc -l < v.par)
+    if (( lines == 1 )); then
+        #  Single-line format, convert to multi-line
+        awk '{for(i=1;i<=NF;i++) print $i}' v.par > v.par.tmp
+        mv v.par.tmp v.par
+        echo "Converted single-line v.par to multi-line format"
+    elif (( lines != 9 )); then
+        echo "ERROR: v.par must contain exactly 9 parameters (found $lines)"
+        echo "Current v.par content:"
+        cat v.par
+        exit 1
+    fi
+    # Check if parameters are valid
+    read -r nz dz fz nx dx fx cdpmin cdpmax dcdp <<< $(cat v.par)
+    (( nz <= 0 )) && { echo "ERROR: nz must be positive"; exit 1; }
+    (( dz <= 0 )) && { echo "ERROR: dz must be positive"; exit 1; }
+}
+
 # -----------------------------------------------------------------------------
 # Fixed parameters for r-parameter scanning
 nr=51        # Number of r-parameters
@@ -217,6 +247,15 @@ cdp=$cdpmin
 while [[ $cdp -le $cdpmax ]]; do
     echo "Processing CDP: $cdp"
     
+    # Extract current CDP data
+    suwind key=cdp min=$cdp max=$cdp < "$input" > tmp.su
+
+    if [[ ! -s tmp.su ]]; then
+        echo "[WARNING] No data found for CDP $cdp in $input, skipping."
+        cdp=$((cdp + dcdp))
+        continue
+    fi
+
     # ---------------------------------------------------------
     # Section 1: CIG Display and Interactive Picking
     # ---------------------------------------------------------
@@ -306,7 +345,9 @@ while [[ $cdp -le $cdpmax ]]; do
     # Process each pick
     for ((pick_idx=1; pick_idx<=num_picks; pick_idx++)); do
         pick_success=false
-        while ! $pick_success; do
+        retry_count=0
+        max_retry=3
+        while ! $pick_success && (( retry_count < max_retry )); do
             echo "Processing pick $pick_idx/$num_picks"
             
             # Create pick index file
@@ -330,6 +371,7 @@ while [[ $cdp -le $cdpmax ]]; do
                 echo "ERROR: dzdv failed for CDP $cdp, pick $pick_idx"
                 echo "Please re-pick for this CDP and pick index."
                 read -p "Press Enter after re-picking (edit mpicks.$cdp as needed)..."
+                retry_count=$((retry_count+1))
                 continue
             fi
             
@@ -341,6 +383,7 @@ while [[ $cdp -le $cdpmax ]]; do
                 echo "ERROR: velpert failed for CDP $cdp, pick $pick_idx"
                 echo "Please re-pick for this CDP and pick index."
                 read -p "Press Enter after re-picking (edit mpicks.$cdp as needed)..."
+                retry_count=$((retry_count+1))
                 continue
             fi
 
@@ -354,6 +397,10 @@ while [[ $cdp -le $cdpmax ]]; do
 
             pick_success=true
         done
+        if (( retry_count == max_retry )); then
+            echo "[ERROR] Maximum retries reached for CDP $cdp, pick $pick_idx. Skipping."
+            break
+        fi
     done
     
     # ---------------------------------------------------------
@@ -373,8 +420,9 @@ while [[ $cdp -le $cdpmax ]]; do
     rm -f deltap.txt
     
     # Clear temporary files 
-    rm -f "mpicks.$cdp" "cig.par.$cdp" "residuo.$cdp" "deltap.$cdp" deltap.tmp
-    rm -f dzfile dfile afile infile tmp.su filecigtot.su corr temp nciclo.txt mpicks.txt numeropick.txt cig.txt 
+    rm -f "mpicks.$cdp" "cig.par.$cdp" "residuo.$cdp" "deltap.$cdp" deltap.tmp cig.par
+    rm -f dzfile dfile afile infile tmp.su filecigtot.su corr temp 
+    rm -f residuo.txt nciclo.txt mpicks.txt numeropick.txt cig.txt 
     rm -f res.p1
 
     # Move to next CDP
@@ -397,7 +445,7 @@ echo "  - vfile.a: ASCII velocity model"
 echo "  - residuotot.dat: Complete residual data"
 echo "  - par_velres: Velocity grid parameters"
 echo "  - picking_cig: All pick coordinates"
-echo "  - cig.par.*: CIG parameters per CDP"
+echo "  - cig.par.*: CIG parameters per CDP (Deleted during cleanup)"
 echo "  - residuo.*: Residual data per CDP (Deleted during cleanup)"
 echo "============================================="
 
