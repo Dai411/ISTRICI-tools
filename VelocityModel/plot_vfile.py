@@ -47,210 +47,163 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 import os
+import sys
 
-# Define available colormaps
+# Colormap definitions
 rgb_cmaps = ['viridis', 'plasma', 'inferno', 'magma', 'cividis']
 hsv_cmaps = ['hsv', 'rainbow', 'jet', 'nipy_spectral', 'gist_rainbow']
 
 def parse_arguments():
-    """Parse command line arguments for velocity field visualization
+    """Parse command line arguments with proper interactive mode detection"""
+    parser = argparse.ArgumentParser(description='Velocity field visualization')
     
-    Returns:
-        argparse.Namespace: Parsed arguments with the following attributes:
-            - nx: Horizontal sampling points (default: 701)
-            - nz: Vertical sampling points (default: 321)
-            - dx: Horizontal sampling interval in meters (default: 100)
-            - dz: Vertical sampling interval in meters (default: 25)
-            - vfile: Velocity field filename (default: 'vfile')
-            - horizons: List of horizon files to plot (default: [])
-            - horizon_names: Optional display names for horizons (default: [])
-            - xflip: Flag to flip x-axis direction (default: False)
-            - no_interactive: Flag to disable interactive prompts (default: False)
-            - cmap: Initial colormap (default: 'hsv')
-    """
-    parser = argparse.ArgumentParser(description='Visualize velocity field with optional horizons')
-    
-    # Matrix parameters
-    parser.add_argument('--nx', type=int, default=701, 
-                       help='Horizontal sampling numbers (default: 701)')
-    parser.add_argument('--nz', type=int, default=321,
-                       help='Vertical sampling numbers (default: 321)')
-    
-    # Sampling intervals
-    parser.add_argument('--dx', type=int, default=100,
-                       help='Horizontal sampling interval in meters (default: 100)')
-    parser.add_argument('--dz', type=int, default=25,
-                       help='Vertical sampling interval in meters (default: 25)')
+    # Grid parameters with defaults matching interactive prompts
+    parser.add_argument('--nx', type=int, default=None)
+    parser.add_argument('--nz', type=int, default=None)
+    parser.add_argument('--dx', type=int, default=None) 
+    parser.add_argument('--dz', type=int, default=None)
     
     # File parameters
-    parser.add_argument('--vfile', type=str, default='vfile',
-                       help='Velocity file name (default: vfile)')
-    parser.add_argument('--horizons', nargs='*', default=[],
-                       help='List of horizon files to plot')
-    parser.add_argument('--horizon-names', nargs='*', default=[],
-                       help='Optional display names for horizons')
+    parser.add_argument('--vfile', type=str, default=None)
+    parser.add_argument('--horizons', nargs='*', default=None)
+    parser.add_argument('--horizon-names', nargs='*', default=None)
     
     # Display options
-    parser.add_argument('--xflip', action='store_true',
-                       help='Flip x-axis direction')
-    parser.add_argument('--no-interactive', action='store_true',
-                       help='Disable interactive prompts')
-    parser.add_argument('--cmap', type=str, default='hsv',
-                       help='Initial colormap (default: hsv)')
+    parser.add_argument('--xflip', action='store_true')
+    parser.add_argument('--cmap', type=str, default='hsv')
     
-    return parser.parse_args()
+    args = parser.parse_args()
+    
+    # Determine if we're in interactive mode (no CLI params provided)
+    args.interactive = all(v is None or v == [] for v in [
+        args.nx, args.nz, args.dx, args.dz,
+        args.vfile, args.horizons, args.horizon_names
+    ])
+    
+    return args
 
-def load_horizon_data(horizon_files, horizon_names, no_interactive):
-    """Load and process horizon data with interactive capabilities
+def prompt_for_parameters():
+    """Interactive prompt for required parameters"""
+    print("Velocity Field Visualization - Interactive Mode")
+    print("--------------------------------------------")
     
-    Args:
-        horizon_files (list): Pre-loaded horizon filenames from CLI
-        horizon_names (list): Corresponding display names
-        no_interactive (bool): Flag to disable interactive prompts
+    params = {
+        'nx': int(input("Horizontal sampling (nx) [701]: ") or 701),
+        'nz': int(input("Vertical sampling (nz) [321]: ") or 321),
+        'dx': int(input("Horizontal interval (dx) [100]: ") or 100),
+        'dz': int(input("Vertical interval (dz) [25]: ") or 25),
+        'vfile': input("Velocity file [vfile]: ") or "vfile",
+        'horizons': [],
+        'horizon_names': []
+    }
     
-    Returns:
-        tuple: (list of horizon files, list of display names)
-    """
-    if not horizon_files:
-        if no_interactive:
-            return [], []
-        plot_horizon = input("Do you want to plot horizon data? (y/n) [n]: ").strip().lower() or 'n'
-        if plot_horizon != 'y':
-            return [], []
-        
+    if input("Plot horizons? (y/n) [n]: ").strip().lower() == 'y':
         while True:
-            horizon_file = input("📥 Please type horizon file name (no path, or 'done' to finish): ").strip()
-            if horizon_file.lower() == 'done':
-                if not horizon_files:
-                    print("No horizon files added. Continuing without horizon data.")
+            hfile = input("Horizon file (or 'done'): ").strip()
+            if hfile.lower() == 'done':
                 break
-                
-            try:
-                horizon_data = np.loadtxt(horizon_file)
-                if horizon_data.shape[1] != 2:
-                    print(f"File '{horizon_file}' should have exactly 2 columns. Skipping this file.")
-                    continue
-                    
-                horizon_files.append(horizon_file)
-                if len(horizon_names) < len(horizon_files):
-                    if no_interactive:
-                        name = os.path.splitext(horizon_file)[0]
-                        horizon_names.append(name)
-                    else:
-                        name = input(f"Enter display name for '{horizon_file}' (or press Enter to use file name): ").strip()
-                        horizon_names.append(name if name else os.path.splitext(horizon_file)[0])
-                
-                if not no_interactive:
-                    add_more = input("Add another horizon? (y/n): ").strip().lower()
-                    if add_more != 'y':
-                        break
-                        
-            except FileNotFoundError:
-                print(f"Horizon file '{horizon_file}' not found! Please try again.")
-            except Exception as e:
-                print(f"Error reading horizon file: {e}. Please try again.")
+            params['horizons'].append(hfile)
+            name = input(f"Display name for {hfile} [{os.path.splitext(hfile)[0]}]: ")
+            params['horizon_names'].append(name or os.path.splitext(hfile)[0])
     
-    return horizon_files, horizon_names
+    params['xflip'] = input("Flip x-axis? (y/n) [n]: ").strip().lower() == 'y'
+    
+    return params
 
 def main():
-    """Main function for velocity field visualization"""
     args = parse_arguments()
     
-    # Load velocity data
-    try:
-        with open(args.vfile, 'rb') as f:
-            data = np.fromfile(f, dtype=np.float32, count=args.nx * args.nz)
-    except FileNotFoundError:
-        print(f"Velocity file '{args.vfile}' not found!")
-        return
-
-    if data.size != args.nx * args.nz:
-        print(f"Data size mismatch! Expected {args.nx * args.nz} values, got {data.size}")
-        return
-
-    # Process data
-    vel = np.reshape(data, (args.nz, args.nx), order='F')
-    x = np.arange(args.nx) * args.dx
-    z = np.arange(args.nz) * args.dz
-
-    # Load horizon data
-    horizon_files, horizon_names = load_horizon_data(args.horizons, args.horizon_names, args.no_interactive)
-
-    # Create plot
-    fig, ax = plt.subplots(figsize=(10, 6), facecolor='w')
-    im = ax.imshow(vel, extent=[x[0], x[-1], z[-1], z[0]], cmap=args.cmap, aspect='auto')
-    im.set_clim(1000, 10000)
-
-    # Custom format for mouse hover coordinates
-    def format_coord(x_val, y_val):
-        """Format coordinates for mouse hover in the plot"""
-        x_idx = int(np.clip((x_val - x[0]) / args.dx, 0, args.nx - 1))
-        y_idx = int(np.clip((y_val - z[0]) / args.dz, 0, args.nz - 1))
-        val = vel[y_idx, x_idx]
-        return f"x={x_val:.1f} m, z={y_val:.1f} m, v={val:.2f} m/s"  # Show x, z, and velocity value
-
-    ax.format_coord = format_coord  # Override default format_coord
-
-    cbar = fig.colorbar(im, label='Velocity (m/s)')
-    ax.set_xlabel('Distance (m)')
-    ax.set_ylabel('Depth (m)')
-    ax.set_title('Velocity Field (m/s)')
-    ax.grid(True, which='both')
-
-    # Plot horizons
-    colors = ['black', 'red', 'blue', 'green', 'cyan', 'magenta', 'yellow']
-    for i, (hfile, hname) in enumerate(zip(horizon_files, horizon_names)):
-        try:
-            hdata = np.loadtxt(hfile)
-            color = colors[i % len(colors)]
-            linestyle = '-' if i < len(colors) else '--'
-            ax.plot(hdata[:, 0], hdata[:, 1], color=color, linestyle=linestyle,
-                   linewidth=2, label=hname)
-        except Exception as e:
-            print(f"Error plotting horizon '{hname}': {e}")
-
-    if horizon_files:
-        ax.legend()
-
-    # Handle x-flip
-    if args.no_interactive:
-        # if no_interactive is set, apply x-flip if specified
-        if args.xflip:
-            ax.invert_xaxis()
+    # Get parameters either from CLI or interactive prompts
+    if args.interactive:
+        params = prompt_for_parameters()
     else:
-        # Interactive x-flip prompt
-        reverse_x = input("Do you need a X_flip? (y/n) [n]: ").strip().lower() or 'n'
-        if reverse_x == 'y':
+        params = {
+            'nx': args.nx or 701,
+            'nz': args.nz or 321,
+            'dx': args.dx or 100,
+            'dz': args.dz or 25,
+            'vfile': args.vfile or 'vfile',
+            'horizons': args.horizons or [],
+            'horizon_names': args.horizon_names or [],
+            'xflip': args.xflip
+        }
+    
+    try:
+        # Load and validate data
+        with open(params['vfile'], 'rb') as f:
+            data = np.fromfile(f, dtype=np.float32, count=params['nx']*params['nz'])
+            if data.size != params['nx']*params['nz']:
+                raise ValueError(f"Data size mismatch: expected {params['nx']*params['nz']}, got {data.size}")
+            vel = np.reshape(data, (params['nz'], params['nx']), order='F')
+
+        # Create plot
+        x = np.arange(params['nx']) * params['dx']
+        z = np.arange(params['nz']) * params['dz']
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        im = ax.imshow(vel, extent=[x[0], x[-1], z[-1], z[0]], 
+                      cmap=args.cmap, aspect='auto')
+        im.set_clim(1000, 10000)
+
+        def format_coord(x_val, y_val):
+            x_idx = int(np.clip((x_val - x[0]) / args.dx, 0, args.nx - 1))
+            y_idx = int(np.clip((y_val - z[0]) / args.dz, 0, args.nz - 1))
+            val = vel[y_idx, x_idx]
+            return f"x={x_val:.1f} m, z={y_val:.1f} m, v={val:.1f} m/s"  
+
+        ax.format_coord = format_coord 
+        fig.text(0.02, 0.01, "Press 'r' for RGB colormaps, 'h' for HSV colormaps", fontsize=9, color='gray')
+
+        fig.colorbar(im, label='Velocity (m/s)')
+        ax.set(xlabel='Distance (m)', ylabel='Depth (m)', 
+              title='Velocity Field (m/s)')
+        ax.grid(True)
+
+        # Plot horizons if any
+        if params['horizons']:
+            colors = ['black', 'red', 'blue', 'green', 'cyan', 'magenta', 'yellow']
+            for i, (hfile, hname) in enumerate(zip(params['horizons'], params['horizon_names'])):
+                try:
+                    hdata = np.loadtxt(hfile)
+                    ax.plot(hdata[:,0], hdata[:,1], 
+                           color=colors[i % len(colors)],
+                           linewidth=2,
+                           label=hname)
+                except Exception as e:
+                    print(f"Error plotting {hfile}: {e}")
+            ax.legend()
+
+        # Apply x-flip if requested
+        if params['xflip']:
             ax.invert_xaxis()
-            print("[ACTION] X-axis flipped.")
 
-    # Keyboard controls
-    def on_key(event):
-        """Handle keyboard events for colormap switching"""
-        global im, cbar
-        if event.key.lower() == 'r':
-            current_cmap = im.get_cmap().name
-            idx = (rgb_cmaps.index(current_cmap) + 1) % len(rgb_cmaps) if current_cmap in rgb_cmaps else 0
-            new_cmap = rgb_cmaps[idx]
-            print(f"[ACTION] Switched to RGB colormap: {new_cmap}")
-        elif event.key.lower() == 'h':
-            current_cmap = im.get_cmap().name
-            idx = (hsv_cmaps.index(current_cmap) + 1) % len(hsv_cmaps) if current_cmap in hsv_cmaps else 0
-            new_cmap = hsv_cmaps[idx]
-            print(f"[ACTION] Switched to HSV colormap: {new_cmap}")
-        else:
-            return
-        im.set_cmap(new_cmap)
-        cbar.remove()
-        cbar = fig.colorbar(im, ax=ax)
-        fig.canvas.draw_idle()
+        # Set up keyboard controls
+        def on_key(event):
+            if event.key.lower() == 'r':
+                cmaps = rgb_cmaps
+            elif event.key.lower() == 'h':
+                cmaps = hsv_cmaps
+            else:
+                return
+            
+            current = im.get_cmap().name
+            idx = (cmaps.index(current) + 1) % len(cmaps) if current in cmaps else 0
+            im.set_cmap(cmaps[idx])
+            fig.canvas.draw_idle()
 
-    fig.canvas.mpl_connect('key_press_event', on_key)
-    print("\nKeyboard controls:")
-    print("  Press 'r' to cycle through RGB colormaps")
-    print("  Press 'h' to cycle through HSV colormaps")
+        fig.canvas.mpl_connect('key_press_event', on_key)
+        
+        # Show keyboard help in interactive mode
+        if args.interactive:
+            print("\nKeyboard controls:")
+            print("  r: Cycle RGB colormaps")
+            print("  h: Cycle HSV colormaps")
 
-    plt.show()
+        plt.show()
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
