@@ -24,8 +24,9 @@ Features:
 Usage:
     python3 horizon_interpolation.py     
 
-Origins from the preparepick.f from ISTRICI from Umberta Tinivella, OGS
-https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/preparepicks.f
+Origin:
+    from the preparepick.f from ISTRICI from Umberta Tinivella, OGS
+    https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/preparepicks.f
 
 """
 
