@@ -22,7 +22,10 @@ Features:
     7. ASCII art for better visual appearance
 
 Usage:
-    python3 horizon_interpolation.py        
+    python3 horizon_interpolation.py     
+
+Origins from the preparepick.f from ISTRICI from Umberta Tinivella, OGS
+https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/preparepicks.f
 
 """
 
