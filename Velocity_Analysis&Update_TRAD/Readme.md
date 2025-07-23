@@ -17,7 +17,7 @@ class A,B,C process;
 |--------|---------|------------|-------------|
 | `CIG_extract.sh` | CDP gather extraction | `kd.data_complete`<br>`outfile1_complete` | `kd.data`<br>`outfile1` |
 | `VelocityAnalysis.sh` | Residual moveout analysis | `kd.data`<br>`vfile` | `residuotot.dat`<br>`v.par` |
-| `UpdateV2M.sh` | Velocity model updating | `residuotot.dat`<br>`vfile.a` | `vfile_updated.bin`<br>`velres.dat` |
+| `UpdateV2M.sh` or `UpdateV.sh` | Velocity model updating | `residuotot.dat`<br>`vfile.a` | `vfile_updated.bin`<br>`velres.dat` |
 
 ---
 
