@@ -28,8 +28,8 @@ Arguments:
     --non-interactive       Run the tool in CLI mode.
     --orig <file>           Path to the original binary file.
     --proc <file>           Path to the processed binary file.
-    --n1 <int>             Vertical dimension size.
-    --n2 <int>             Horizontal dimension size.
+    --n1 <int>              Vertical dimension size.
+    --n2 <int>              Horizontal dimension size.
     --save <filename>       Save the comparison plot as PNG.
     --save-error <filename> Save error data as binary file (Fortran-order).
 """
