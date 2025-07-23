@@ -36,7 +36,7 @@ Extracts Common Depth Point (CDP) gathers from full seismic datasets at specifie
 ./CIG_extract.sh -k full_kd.data -o full_outfile.su -f 5000 -s 250 -l 45000
 ```
 The script CIG_extract.sh will try to load the files named as "kd.data_complete" and "outfile1_complete" when there is no `-k` and `-o` parameters, these two files are the default output files from the migration performed by the script PerformPSDM.sh. In this case the output files are named as "kd.data" and "outfile1".   
-Parameters `-f` and `-s` are necessary in extracting the CIGs which decide the start and the step.
+Parameters `-f` and `-s` are necessary in extracting the CIGs from the complete outputs from the migration, which decide the start and the step. If there is no `-l` parameter, the CIG extraction will finish by the end.
 
 ### Parameters
 | Flag | Description | Example |
