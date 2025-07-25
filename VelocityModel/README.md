@@ -14,11 +14,16 @@ The toolbox including:
 
 - velocity model editor (vel_sub_interp_v3.py)
  
-- velocity model generator (vel_gen.py) 
+- velocity model generator (vel_gen.py)
+
+- Velocity model plotter (plot_vfile.py) 
 
 - velocity model smooth tool (smooth2.py)  
 &ensp;&ensp;*With a manual*
-- velocity model smooth effect checker (smooth2_comp.py)
+- velocity model compare tool (comp_vfile.py)
 
 - horizon editor (horizon_editor_v3.py)
   
+- horizon generator (horizon_gen.py)
+
+- horizon interpolation tool (horizon_interpolation.py)
