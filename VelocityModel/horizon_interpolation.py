@@ -24,6 +24,19 @@ Features:
 Usage:
     python3 horizon_interpolation.py     
 
+An example for the expected input data and output format (using linear interpolation):
+    - Input: Two-column ASCII file with picked horizon data
+          0 1000
+        300 1300
+        500 1400
+    - Output: Two-column ASCII file with interpolated data
+          0 1000
+        100 1100
+        200 1200
+        300 1300
+        400 1350
+        500 1400
+        
 Origin:
     From the preparepick.f from ISTRICI from Umberta Tinivella, OGS
     https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/preparepicks.f
