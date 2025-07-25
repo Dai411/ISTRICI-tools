@@ -1,13 +1,46 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Written by Lining YANG @ CNR-ISMAR, BOLOGNA, ITALY
-# Date: 2025-06-11 11:39
-# This script 'vel_gen.py' is designed to build a velocity model (binary file, float 32, matrix size: nx*nz)
-# The required input files are horizons information (horizon.dat, [z,x]), could be either interpolated or raw picked, 
-# The interpolated horizons should have the same length as nx (from the velocity vifle)
+#
+# vel_gen.py - Interactive Velocity Model Generator
+# Author: Lining YANG @ CNR-ISMAR Bologna
+# Date: 2025-07-25
+# License: BSD-3-Clause
+# =====================================================================================
+# Description:
+#   This script interactively generates a 2D velocity model for seismic applications.
+#   Users can define horizons (as picked or interpolated files), choose interpolation
+#   methods for each layer, preview the model, and save the result as a Fortran-order
+#   binary float32 file. Supports various interpolation functions and custom expressions.
+#
+# Usage:
+#   python vel_gen.py
+#   # Follow the prompts to define grid, horizons, and velocity layers.
+#
+# Input:
+#   - Horizon files: Picked horizons (z,x) or interpolated horizons (x,z)
+#   - Layer velocity parameters: Constant or interpolated between top/bottom
+#
+# Output:
+#   - Binary velocity model file (float32, Fortran-order, shape nz*nx)
+#
+# Features:
+#   - Supports multiple interpolation methods: linear, spline, cubic, akima, etc.
+#   - Custom velocity-depth functions via Python expressions
+#   - Interactive preview of horizons and velocity profiles
+#   - Fortran-order output for compatibility with seismic processing tools
+#   - Robust input validation and error handling
+#
+# Example workflow:
+#   1. Define grid size and spacing
+#   2. Specify number of horizons and provide horizon files
+#   3. Choose interpolation method for each horizon
+#   4. For each layer, choose constant or interpolated velocity
+#   5. Preview the velocity model
+#   6. Save to binary file if satisfied
+# ====================================================================================
 
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  
 import os
 from scipy.interpolate import (interp1d, UnivariateSpline, CubicSpline, 
                              Akima1DInterpolator, BSpline, make_interp_spline)
@@ -16,15 +49,20 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def load_picks(filename):
+    """Load picked horizon file (z,x format). Returns x, z arrays."""
     data = np.loadtxt(filename)
     z, x = data[:, 0], data[:, 1]
     return x, z
 
 def interpolate_horizon(x, z, fx, lx, dx, method='linear'):
-    """Interpolate horizon using specified method."""
+    """
+    Interpolate horizon using specified method.
+    x, z: input points
+    fx, lx, dx: grid start, end, spacing
+    method: interpolation type (string or number)
+    Returns interpolated x, z arrays.
+    """
     xi = np.arange(fx, lx + dx, dx)
-    
-    # Mapping Method
     method_map = {
         '1': 'linear',
         '2': 'spline',
@@ -35,10 +73,7 @@ def interpolate_horizon(x, z, fx, lx, dx, method='linear'):
         '7': 'bspline',
         '8': 'nearest'
     }
-    
-    # Choose the interpolation Method
     method = method_map.get(method, method)
-    
     if method == "linear":
         f = interp1d(x, z, kind='linear', bounds_error=False,
                     fill_value=(z[0], z[-1]))
@@ -60,11 +95,11 @@ def interpolate_horizon(x, z, fx, lx, dx, method='linear'):
                     fill_value=(z[0], z[-1]))
     else:
         raise ValueError("Unknown interpolation method. Valid methods: linear, spline, poly3, cubic, akima, quadratic, bspline, nearest")
-    
     zi = f(xi)
     return xi, zi
 
 def preview_horizons(horizons, dx):
+    """Plot all horizons for visual inspection."""
     plt.figure(figsize=(10, 6))
     for i, (_, z) in enumerate(horizons):
         x = np.arange(len(z)) * dx
@@ -79,7 +114,12 @@ def preview_horizons(horizons, dx):
     plt.show()
 
 def preview_interp_functions(v_start, v_end, selected_types=None):
-    """Preview selected interpolation functions."""
+    """
+    Preview selected velocity-depth interpolation functions.
+    v_start: velocity at top
+    v_end: velocity at bottom
+    selected_types: list of function names to preview
+    """
     x = np.linspace(0, 1, 500)
     functions = {
         'linear': lambda x: v_start + (v_end - v_start) * x,
@@ -90,28 +130,30 @@ def preview_interp_functions(v_start, v_end, selected_types=None):
         'sigmoid': lambda x: v_start + (v_end - v_start) * (1 / (1 + np.exp(-10 * (x - 0.5)))),
         'bell': lambda x: v_start + (v_end - v_start) * (1 - np.abs(2 * x - 1))
     }
-    
-    # If specific types are selected, filter the functions
     if selected_types:
         functions = {k: v for k, v in functions.items() if k in selected_types}
-    
     plt.figure(figsize=(10, 6))
     for name, func in functions.items():
         plt.plot(func(x), x, label=name, linewidth=2)
-    
     plt.title("Interpolation Function Preview")
     plt.xlabel("Velocity (m/s)")
     plt.ylabel("Normalized depth")
-    plt.gca().invert_yaxis()  
+    plt.gca().invert_yaxis()
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
     plt.show()
 
 def get_velocity_profile(model_type, npts, v_start, v_end, expr=None):
-    """Get velocity profile using various interpolation methods."""
+    """
+    Generate velocity profile for a layer using specified interpolation.
+    model_type: interpolation type (string)
+    npts: number of depth samples
+    v_start, v_end: velocity at top/bottom
+    expr: custom Python expression (if model_type == 'custom')
+    Returns velocity array of length npts.
+    """
     t = np.linspace(0, 1, npts)
-    
     if model_type == "linear":
         return v_start + (v_end - v_start) * t
     elif model_type == "log":
@@ -128,7 +170,7 @@ def get_velocity_profile(model_type, npts, v_start, v_end, expr=None):
         return v_start + (v_end - v_start) * (1 - np.abs(2 * t - 1))
     elif model_type == "custom":
         try:
-            x = t  # for custom expression
+            x = t
             return eval(expr, {"x": x, "np": np})
         except Exception as e:
             print("❌ Error in custom expression:", e)
@@ -144,8 +186,10 @@ def main():
     dz = float(input("Enter dz (m): "))
     background = float(input("Enter background velocity (default above first horizon): "))
 
+    # Initialize velocity model with background value
     vel_model = np.full((nz, nx), background, dtype=np.float32)
- 
+
+    # Input number of horizons
     while True:
         num_layers_input = input("How many horizons do you want to insert? ")
         if num_layers_input.isdigit():
@@ -153,9 +197,10 @@ def main():
             break
         else:
             print("❌ Please enter a valid integer for the number of horizons.")
-    
+
     horizons = []
-  
+
+    # Input horizon files and interpolation
     for layer in range(num_layers):
         print(f"--- Horizon {layer+1} ---")
         fname = input("Enter horizon filename: ").strip()
@@ -165,8 +210,7 @@ def main():
             fx = 0
             lx = (nx - 1) * dx
             x, z = load_picks(fname)
-            
-            while True:  # Add loop here
+            while True:
                 print("\nAvailable interpolation methods:")
                 print("1. linear")
                 print("2. spline")
@@ -178,15 +222,13 @@ def main():
                 print("8. nearest")
                 method = input("Choose method (number or name): ").strip().lower()
                 x_interp, z_interp = interpolate_horizon(x, z, fx, lx, dx, method)
-                
                 horizons.append((x_interp, z_interp))
                 preview_horizons(horizons, dx)
                 confirm = input("✅ Are horizons OK? (y to continue): ").strip().lower()
-                
                 if confirm == 'y':
                     break
                 else:
-                    horizons.pop()  # Remove the last horizon to try again
+                    horizons.pop()
         else:
             x_interp, z_interp = np.loadtxt(fname, unpack=True)
             horizons.append((x_interp, z_interp))
@@ -196,12 +238,13 @@ def main():
                 print("❌ Aborting. Please fix horizon input.")
                 return
 
+    # Add bottom horizon at model base
     horizons.append((np.arange(nx) * dx, np.full(nx, nz * dz)))
 
+    # Layer velocity assignment
     for i in range(num_layers):
         top = horizons[i][1]
         bot = horizons[i+1][1]
-
         mask = np.ones_like(vel_model, dtype=bool)
         for j in range(nx):
             ztop_idx = int(top[j] // dz)
@@ -217,7 +260,6 @@ def main():
         else:
             v_start = float(input("Enter velocity at top: "))
             v_end = float(input("Enter velocity at bottom: "))
-            
             print("\nAvailable interpolation types:")
             print("1. linear")
             print("2. log")
@@ -228,33 +270,21 @@ def main():
             print("7. bell")
             print("8. custom (e.g. x**0.5 + 1550)")
             print("\nYou can enter multiple types to preview (e.g. '2 4' or 'log sqrt')")
-            
-            # Get preview choices
             preview_choice = input("Enter one or more interpolation types: ").strip().lower()
-            
-            # Convert number inputs to names
-            type_map = {'1': 'linear', '2': 'log', '3': 'exp', '4': 'sqrt', 
-                       '5': 'square', '6': 'sigmoid', '7': 'bell', '8': 'custom'}
-            
-            # Process the preview choices
+            type_map = {'1': 'linear', '2': 'log', '3': 'exp', '4': 'sqrt',
+                        '5': 'square', '6': 'sigmoid', '7': 'bell', '8': 'custom'}
             preview_types = []
             for choice in preview_choice.split():
                 if choice in type_map:
                     preview_types.append(type_map[choice])
                 else:
                     preview_types.append(choice)
-            
-            # Show preview of selected functions
             preview_interp_functions(v_start, v_end, preview_types)
-            
-            # Get final choice for actual interpolation
             model_type = input("\nNow choose one type for interpolation: ").strip().lower()
             model_type = type_map.get(model_type, model_type)
-            
             expr = None
             if model_type == 'custom':
                 expr = input("Enter custom Python expression using 'x' or 't' (e.g. x**0.5 + 1550): ")
-
             for j in range(nx):
                 ztop_idx = int(top[j] // dz)
                 zbot_idx = int(bot[j] // dz)
@@ -264,15 +294,14 @@ def main():
                 profile = get_velocity_profile(model_type, npts, v_start, v_end, expr)
                 vel_model[ztop_idx:zbot_idx, j] = profile
 
-    # === Preview? ===
+    # Preview velocity model
     preview = input("👀 Do you want to preview the current velocity model? (y/n): ").strip().lower()
     if preview == 'y':
-        # === Preview of the new built velocity model ===
+        vel_model_plot = vel_model.reshape((nz, nx), order='F')
         x = np.arange(nx) * dx
         z = np.arange(nz) * dz
-
         plt.figure(figsize=(10, 6))
-        plt.imshow(vel_model, extent=[x[0], x[-1], z[-1], z[0]], cmap='jet', aspect='auto')
+        plt.imshow(vel_model_plot, extent=[x[0], x[-1], z[-1], z[0]], cmap='jet', aspect='auto')
         plt.colorbar(label='Velocity (m/s)')
         plt.xlabel("Distance (m)")
         plt.ylabel("Depth (m)")
@@ -281,7 +310,7 @@ def main():
         plt.tight_layout()
         plt.show()
 
-    # === Save it? ===
+    # Save velocity model to binary file
     save = input("💾 Save this velocity model to binary file? (y/n): ").strip().lower()
     if save == 'y':
         fname = input("Enter output filename (no extension): ").strip()
@@ -290,7 +319,6 @@ def main():
         print(f"✅ Velocity model saved to '{fname}' (Float32 binary).")
     else:
         print("⚠️ Model not saved.")
-
 
 if __name__ == '__main__':
     main()
