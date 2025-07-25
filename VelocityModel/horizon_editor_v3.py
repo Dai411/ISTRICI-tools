@@ -1,6 +1,6 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# horizon_editor_v3.py
+# horizon_editor.py
 
 """
 Introduction:
