@@ -1,53 +1,94 @@
-# Written by Lining YANG @ CNR-ISMAR, BOLOGNA, ITALY
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# =====================================================================================
+# vel_sub_interp_v3.py
+# Author: Lining YANG @ CNR-ISMAR, BOLOGNA, ITALY
 # Date: 2025-06-06 16:24
-# v3 version has more interporlation functions and better visualization
-# This script is used to replace constant velocity values in a velocity model with interpolated values
-# It allows users to select different interpolation functions and visualize the results
+# Last Modified: 2025-07-25
+# License: BSD-3-Clause
+# =====================================================================================
+# v3 version: more interpolation functions and improved visualization
+#
+# Description:
+#   This script replaces constant velocity values in a 2D velocity model (float32, Fortran-order)
+#   with interpolated values using various interpolation functions.
+#   Users can preview multiple interpolation functions, select one, and visualize the results.
+#   The output is saved as a new binary velocity model file.
+#
+# Usage:
+#   python vel_sub_interp_v3.py
+#   # Follow the prompts for grid size, input file, target value, interpolation range, and output file suffix.
+#
+# Input:
+#   - Velocity model file (float32 binary, Fortran-order, shape nz*nx)
+#   - Target value to substitute (e.g. 3500)
+#   - Interpolation range (start/end values)
+#
+# Output:
+#   - New velocity model file with substituted/interpolated values
+#   - Side-by-side visualization of original and modified models
+#
+# Features:
+#   - Supports multiple interpolation functions: linear, log, exp, sqrt, square, sigmoid, bell, custom
+#   - Interactive preview and selection of interpolation functions
+#   - Robust input validation and error handling
+#   - Visualization using matplotlib (supports Chinese font if available)
+#
+# =====================================================================================
 
-import numpy as np # type: ignore
-import matplotlib.pyplot as plt # type: ignore
+import numpy as np  # Numerical operations
+import matplotlib.pyplot as plt  # Visualization
 import os
-import matplotlib.font_manager as fm # type: ignore
+import matplotlib.font_manager as fm  # Font manager for custom fonts
 import warnings
 
-# If no need Chinese charcters in the preview part, ignore loading Chinese fonts part
-# === 忽略字体警告（中文字符缺失）=== Ignore font warnings (Chinese characters missing) ===
-warnings.filterwarnings("ignore", category=UserWarning) 
+# Ignore font warnings (e.g. missing Chinese glyphs)
+warnings.filterwarnings("ignore", category=UserWarning)
 
-# === 加载中文字体 === Load Chinese fonts ===
+# === Load custom font (modify path as needed) ===
 font_path = "/home/rock411/fonts/NotoSansCJKsc-Black.otf"
 my_font = fm.FontProperties(fname=font_path)
 
-# === Input parameters === 用户输入参数 ===
-nx = int(input("Please input horizontal sampling numbers nx:\n"))
-nz = int(input("Please input vertical sampling numbers nz:\n"))
-dx = int(input("Please input horizontal sampling resolution dx:\n"))
-dz = int(input("Please input vertical sampling resolution dz:\n"))
-filename = input("Please input vfile (Float32) e.g. vfile4l_15_16_20_50:\n").strip()
-target_value = float(input("The constant velocity you want to substitute (e.g. 3500):\n"))
-interp_start = float(input("The start value for interpolation (e.g. 3000):\n"))
-interp_end = float(input("The end value for interpolation (e.g. 4000):\n"))
+# === User input parameters ===
+""" We can set default values here, but they will be overridden by user input."""
+#nx = 701  # Horizontal sampling points
+#nz = 321  # Vertical sampling points
+#dx = 100  # Horizontal sampling interval
+#dz = 25   # Vertical sampling interval
 
-# === Can set default value like this ===
-#nx = 701  # 
-#nz = 321  # 
-#dx = 100  # 
-#dz = 25   # 
+# The default values can be set here, in [], press Enter to use them. 
+print("[INFO] Press Enter to use default values, or input your own:")
+nx = int(input("Please input horizontal sampling numbers nx [701]: ") or 701)
+nz = int(input("Please input vertical sampling numbers nz [321]: ") or 321)
+dx = int(input("Please input horizontal sampling resolution dx [100]: ") or 100)
+dz = int(input("Please input vertical sampling resolution dz [25]: ") or 25)
+filename = input("Please input velocity model file (Float32) e.g. vfile4l_15_16_20_50:\n").strip()
+target_value = float(input("The constant velocity you want to substitute (e.g. 3500): "))
+interp_start = float(input("The start value for interpolation (e.g. 3000): "))
+interp_end = float(input("The end value for interpolation (e.g. 4000): "))
 
 suffix = input("Please type the suffix of the new file:\n")
 output_filename = filename + '_interp' + suffix
 
+# Check if input file exists
 if not os.path.exists(filename):
     print(f"❌ No file '{filename}' found!")
     exit()
 
+# Load velocity model (float32, Fortran-order)
 with open(filename, 'rb') as f:
     data = np.fromfile(f, dtype=np.float32, count=nx * nz)
 vel_original = np.reshape(data, (nz, nx), order='F')
 vel_modified = vel_original.copy()
 
-# === Define interpolation parameters === 插值函数定义 === 
+# === Interpolation function definitions ===
 def get_function(name, start, end, expr=None):
+    """
+    Returns interpolated velocity profile for normalized depth x in [0,1].
+    name: interpolation type
+    start, end: velocity at top/bottom
+    expr: custom Python expression (if name == 'custom')
+    """
     x = np.linspace(0, 1, 500)
     if name == "linear":
         y = start + (end - start) * x
@@ -73,7 +114,7 @@ def get_function(name, start, end, expr=None):
         raise ValueError("Unknown function type")
     return x, y
 
-# === Interpolation function select === 插值函数选择与图像对比 ===
+# === Interpolation function selection and preview ===
 function_map = {
     "1": "linear", "2": "log", "3": "exp", "4": "sqrt",
     "5": "square", "6": "sigmoid", "7": "bell", "8": "custom",
@@ -100,7 +141,7 @@ while True:
             custom_exprs[func] = expr
         selected_funcs.append(func)
 
-    # === Function plot preview === 多函数绘图预览 ===
+    # === Function plot preview ===
     x_plot = np.linspace(0, 1, 500)
     plt.figure(figsize=(8, 4))
     for func in selected_funcs:
@@ -122,15 +163,15 @@ while True:
     choice_input = input("✅ Enter the interpolation type you want to use: ").strip().lower()
     final_choice = function_map.get(choice_input)
     if final_choice is None or final_choice not in selected_funcs:
-        print("❌ Invalid choice. Please re-select.")
+        print("[INFO] ❌ Invalid choice. Please re-select.")
         continue
     final_expr = custom_exprs.get(final_choice, None)
     break
 
-# === Get the final interpolation value sequence (0-1) === 获取最终插值值序列（0-1） ===
+# === Get final interpolation profile (0-1 normalized) ===
 interp_func = get_function(final_choice, interp_start, interp_end, final_expr)[1]
 
-# === Interpolation replacement logic === 插值替换逻辑 ===
+# === Interpolation substitution logic ===
 for i in range(nx):
     column = vel_modified[:, i]
     indices = np.where(column == target_value)[0]
@@ -142,13 +183,13 @@ for i in range(nx):
     new_values = interp_func[:length]
     vel_modified[di1:di2 + 1, i] = new_values
 
-# === Rewrite new file ===
+# === Save new velocity model file ===
 with open(output_filename, 'wb') as f:
     vel_modified.T.astype(np.float32).tofile(f)
 
-print(f"\n✅ Interpolation finished, new vfile saved as: {output_filename}")
+print(f"\n[STATUS] ✅ Interpolation finished, new velocity model saved as: {output_filename}")
 
-# === Visualization ===
+# === Visualization: original vs interpolated velocity model ===
 x = np.arange(nx) * dx
 z = np.arange(nz) * dz
 fig, axs = plt.subplots(1, 2, figsize=(14, 6), facecolor='w')
