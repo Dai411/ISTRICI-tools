@@ -12,7 +12,7 @@ The toolbox including:
 &ensp;&ensp;1. vel_sub_const.py - based on the velocity values  
 &ensp;&ensp;2. vel_sub_horizon.py - based on the input horizons
 
-- velocity model editor (vel_sub_interp_v3.py)
+- velocity model editor (vel_sub_interp.py)
  
 - velocity model generator (vel_gen.py)
 
@@ -22,7 +22,7 @@ The toolbox including:
 &ensp;&ensp;*With a manual*
 - velocity model compare tool (comp_vfile.py)
 
-- horizon editor (horizon_editor_v3.py)
+- horizon editor (horizon_editor.py)
   
 - horizon generator (horizon_gen.py)
 
