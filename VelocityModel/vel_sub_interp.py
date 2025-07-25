@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # =====================================================================================
-# vel_sub_interp_v3.py
+# vel_sub_interp.py
 # Author: Lining YANG @ CNR-ISMAR, BOLOGNA, ITALY
 # Date: 2025-06-06 16:24
 # Last Modified: 2025-07-25
@@ -16,8 +16,8 @@
 #   The output is saved as a new binary velocity model file.
 #
 # Usage:
-#   python vel_sub_interp_v3.py
-#   # Follow the prompts for grid size, input file, target value, interpolation range, and output file suffix.
+#   python3 vel_sub_interp.py
+#   - Follow the prompts for grid size, input file, target value, interpolation range, and output file suffix.
 #
 # Input:
 #   - Velocity model file (float32 binary, Fortran-order, shape nz*nx)
