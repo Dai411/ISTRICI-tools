@@ -9,14 +9,12 @@ vel_data_analysis.py - Velocity Model Data Analysis Tool
 version: 1.0.0
 This script provides an interactive tool for analyzing seismic velocity model binary files.
 
-
 It allows users to:
-
-- Auto-detect possible dimensions (nx, nz) for a binary float32 file.
-- Visualize the data using both C-order and Fortran-order.
-- Let user choose the correct order.
-- Show data distribution: histogram, most frequent values.
-- Optionally plot sampled profiles (every N rows/columns) using various visualization methods.
+    - Auto-detect possible dimensions (nx, nz) for a binary float32 file.
+    - Visualize the data using both C-order and Fortran-order.
+    - Let user choose the correct order.
+    - Show data distribution: histogram, most frequent values.
+    - Optionally plot sampled profiles (every N rows/columns) using various visualization methods.
 """
 
 import numpy as np
