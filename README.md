@@ -17,7 +17,11 @@ Tinivella, U. and Giustiniani, M., 2023. ISTRICI–Tools for facilitating seismi
 `  
 The original `Readme_ISTRICI` file is seen at the below link: https://github.com/Dai411/ISTRICI-OGS/blob/main/README_ISTRICI  
 
-## The purpose in this projects.  
+## The trigger of this projects  
+
+The original codes in the project provided by Dr Tinivella and Dr Giustiniani are listed in the repository `ISTRICI`  
+https://github.com/utinivella/ISTRICI  
+
 
 
 
