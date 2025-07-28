@@ -22,7 +22,7 @@ Before using a shell script, we need to make it executable, using the command:
 ```bash
 chmod +x *.sh
 ```
-
+---
 ## 1. CIG Extraction (`CIG_extract.sh`)
 ### Purpose
 Extracts Common Depth Point (CDP) gathers from full seismic datasets at specified intervals
