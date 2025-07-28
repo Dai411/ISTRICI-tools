@@ -1,4 +1,3 @@
-
 # Marine Seismic Velocity Analysis and Update Workflow
 
 ## Workflow Overview
@@ -19,7 +18,10 @@ class A,B,C process;
 | `VelocityAnalysis.sh` | Residual moveout analysis | `kd.data`<br>`vfile` | `residuotot.dat`<br>`v.par` |
 | `UpdateV2M.sh` or `UpdateV.sh` | Velocity model updating | `residuotot.dat`<br>`vfile.a` | `vfile_updated.bin`<br>`velres.dat` |
 
----
+Before using a shell script, we need to make it executable, using the command:
+```bash
+chmod +x *.sh
+```
 
 ## 1. CIG Extraction (`CIG_extract.sh`)
 ### Purpose
