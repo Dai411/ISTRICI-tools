@@ -6,7 +6,7 @@ This integrated processing chain performs residual moveout analysis and velocity
 ```mermaid
 graph LR
 A[CIG Extraction] --> B[Velocity Analysis]
-B --> C[Model Updating]
+B --> C[Velocity Model Updating]
 classDef process fill:#e6f7ff,stroke:#3399ff;
 class A,B,C process;
 ```
