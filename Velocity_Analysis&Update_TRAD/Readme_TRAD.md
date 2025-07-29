@@ -4,8 +4,7 @@ This workflow is based on the orginal code from the project `https://github.com/
 orginally developed by **Dr Tinivella Umberta and Dr Giustiniani Michela** @OGS, Italy. 
 
 The details about the TRAD can be found in the article 'ISTRICI - Tools for facilitating seismic depth imaging and velocity analysis with seismic unix' 
-in the journal Computers and Geosciences in 2023, which is OPEN ACCESS, can de downloaded from the below links:
-`doi: https://doi.org/10.1016/j.cageo.2023.105458.`
+in the journal Computers and Geosciences in 2023 (OA) can de downloaded from: `doi: https://doi.org/10.1016/j.cageo.2023.105458.`  
 The orginal flow chart can be seen in Figure.3 in the above article.  
 
 
