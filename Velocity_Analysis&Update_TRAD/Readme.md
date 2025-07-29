@@ -1,4 +1,9 @@
-# Marine Seismic Velocity Analysis and Update Workflow
+# Marine Seismic Velocity Analysis and Update Workflow  
+
+This workflow is based on the orginal code from the project `https://github.com/utinivella/ISTRICI/tree/main/TRAD_V1` 
+orginally developed by **Dr Tinivella Umberta and Dr Giustiniani Michela** @OGS, Italy. 
+
+
 
 ## Workflow Overview
 This integrated processing chain performs residual moveout analysis and velocity model updating for marine seismic data:
