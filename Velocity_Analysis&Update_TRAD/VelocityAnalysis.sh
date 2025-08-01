@@ -85,7 +85,7 @@ b2a <vfile n1=1 >vfile.a # Convert binary to ASCII for easier processing
 #read dzmig  # Depth sampling in migrated data (m)
 #read d2mig  # Trace header parameter
 
-# ========= Preset parameters for the analysis ========= 
+# =========== Preset hard coding parameters ============ 
 nz=321       
 dz=25        
 fz=0         
