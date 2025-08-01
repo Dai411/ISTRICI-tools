@@ -32,7 +32,7 @@
 echo "Starting Seismic Velocity Analysis"
 echo "================================="
 
-# Check for the pevious outputfile "residutat.dat"
+# Check for the pevious outputfile "residutot.dat"
 if [[ -f "residuotot.dat" ]]; then
     read -p "residuotot.dat already exists. Overwrite? (y/n) [n]: " overwrite
     if [[ "$overwrite" != "y" ]]; then
