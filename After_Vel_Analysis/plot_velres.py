@@ -25,7 +25,7 @@ CLI Usage Example:
 
 Interactive Usage:
     python3 plot_velres.py
-    # Then follow the prompts for file name and dimensions
+    Then follow the prompts on the console
 
 Colormap switching:
     - Press 'r' to cycle through RGB colormaps
