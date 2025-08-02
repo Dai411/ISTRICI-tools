@@ -107,28 +107,3 @@
 
 ---
 
-## FAQs
-**Q: How to handle marine data with water bottom constraints?**  
-A: Use `UpdateV2M.sh` (derivative of UpdateV.sh) with the `-w` flag
-
-**Q: Can I still use manual picks?**  
-A: Yes, place picks in `mpicks.$cdp` with same format as before
-
-**Q: Minimum system requirements?**  
-A: Now requires Bash 4.2+ (was 3.2+ in legacy)
-```
-
----
-
-This documentation features:
-1. **Visual workflow diagrams** using Mermaid syntax
-2. **Quantitative performance comparisons**
-3. **Migration checklist** for smooth transition
-4. **Structured FAQs** based on common use cases
-5. **Versioned technical specs** for reproducibility
-
-Would you like me to add any of the following?
-- Detailed input file specifications
-- Example output comparisons
-- Troubleshooting guide for common errors
-- Benchmarking methodology details
