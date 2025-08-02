@@ -269,7 +269,7 @@ program faivelres
     ! Vertical interpolation
     do i = nmin, nmax, nstep
         do j = 1, nz
-            z = fz + dz * (j - 1)  ! 使用正确的 fz 变量
+            z = fz + dz * (j - 1)  ! Check the name of vaiables
             
             ! Skip if no picks for this CDP (marked by 999)
             if (res(i, 1, 3) == 999) then
