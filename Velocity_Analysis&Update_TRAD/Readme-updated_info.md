@@ -12,14 +12,19 @@
 | **Error Handling**| No explicit checks                        | Comprehensive validation + tiered logging | Faster troubleshooting                 |
 | **Performance**  | Static arrays, fixed-format               | Dynamic allocation, free-format           | Better memory utilization              |
 
-## 2. Shell Function Comparison
-### (1) `faicigpar` (Legacy: Fortran → New: Shell)
+## 2. Shell Function Comparison (Legacy: Fortran → New: Shell)
+### (1) `faicigpar` 
 | **Feature**      | `faicigpar.f` (Legacy)                   | `faicigpar()` (New)                     |
 |------------------|------------------------------------------|------------------------------------------|
 | **Input Validation** | None                                  | Checks file existence & pick ranges      |
 
-### (2) `aggiungilambda` (Legacy: Fortran → New: Shell)
+### (2) `aggiungilambda` 
 | **Feature**      | `aggiungilambda.f` (Legacy)             | `aggiungilambda()` (New)                |
+|------------------|------------------------------------------|------------------------------------------|
+| **Data Consistency** | No checks                             | Validates line counts                    |
+
+### (3) `sommavel` 
+| **Feature**      | `sommavel.f` (Legacy)             | `add_velocity_models()` (New)                |
 |------------------|------------------------------------------|------------------------------------------|
 | **Data Consistency** | No checks                             | Validates line counts                    |
 
