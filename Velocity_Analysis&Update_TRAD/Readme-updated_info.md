@@ -36,10 +36,12 @@
 1. Precision Upgrade:
     - Legacy: Implicit type conversion
     ```Fortran
+    ! Fortran f95
     write(16,*) vel+velres  ! Uncontrolled precision
     ```
     - Modern: Explicit formatting
     ```bash
+    # Shell
     printf "%.8f\n", $1+$2  # Enforced 8-decimal precision
     ```
 2. Memory Optimization:
