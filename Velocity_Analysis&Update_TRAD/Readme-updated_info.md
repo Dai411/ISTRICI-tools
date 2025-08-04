@@ -164,17 +164,18 @@ end program
 ### Legacy Workflow
 ```mermaid
 graph TD
-    A[CIGextraction] --> B[Manual Fortran Compile]
-    B --> C[VELOCITYANALISYS.sh]
-    C --> D[UPDATEvelocity_detail.sh]
+    A[sh CIGextraction] --> B[Manual Fortran Compile \n f95 -o]
+    B --> C[sh VELOCITYANALISYS]
+    C --> D[sh UPDATEvelocity_detail]
+    C --> E[sh UPDATEvelocity2marinedata_detail]
 ```
 
 ### Modern Workflow
 ```mermaid
 graph TD
-    A[CIG_extract.sh] --> B[VelocityAnalysis.sh]
-    B --> C[UpdateV.sh]
-    C --> D[Auto-compiled Fortran]
+    A[./CIG_extract.sh] --> B[VelocityAnalysis.sh]
+    B --> C[./UpdateV.sh (Free Format Fortran compiled)]
+    C --> D[./UpdateV2M.sh (Free Format Fortran compiled)]
 ```
 
 ---
