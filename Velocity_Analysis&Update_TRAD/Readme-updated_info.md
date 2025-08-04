@@ -32,17 +32,16 @@
 | **Parallel Capability** | Single-threaded                   | Parallel-ready via `parallel`            |
 
 #### Technical Notes:
-1. Precision Upgrade:  
-    - Legacy: Implicit type conversion  
-```fortran
-write(16,*) vel+velres  ! Uncontrolled precision
-```
-
+# Technical Notes:
+1. Precision Upgrade:
+    - Legacy: Implicit type conversion
+    ```Fortran
+    write(16,*) vel+velres  ! Uncontrolled precision
+    ```
     - Modern: Explicit formatting
-
-```bash
-printf "%.8f\n", $1+$2  # Enforced 8-decimal precision
-```
+    ```bash
+    printf "%.8f\n", $1+$2  # Enforced 8-decimal precision
+    ```
 2. Memory Optimization:
 
 ```fortran
