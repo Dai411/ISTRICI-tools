@@ -26,7 +26,9 @@
 ### (3) `sommavel` 
 | **Feature**      | `sommavel.f` (Legacy)             | `add_velocity_models()` (New)                |
 |------------------|------------------------------------------|------------------------------------------|
-| **Data Consistency** | No checks                             | Validates line counts                    |
+| **Data Consistency** | No checks                            | Validates line counts                    |
+| **Memory Management** | Static arrays, fixed size           | Stream processing, no memory limits      |
+
 
 ## 3. Fortran Code Upgrade Comparison
 ### 3.1 Language Modernization
