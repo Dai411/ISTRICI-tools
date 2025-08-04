@@ -1,7 +1,7 @@
 # Seismic Velocity Analysis Workflow Upgrade Documentation
 
 **Filename**: `README_What_Updated.md`  
-**Version**: 2.1 
+**Version**: 2.1  
 **Time**: 2025-08-04  
 **Author**: Lining Yang @CNR-ISMAR, Bologna, Italia
 
