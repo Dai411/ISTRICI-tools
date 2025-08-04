@@ -11,17 +11,24 @@
 | **Architecture** | Shell + Separate Fortran files            | Shell + Embedded Fortran                  | One-click deployment                   |
 | **Error Handling**| No explicit checks                        | Comprehensive validation + tiered logging | Faster troubleshooting                 |
 | **Performance**  | Static arrays, fixed-format               | Dynamic allocation, free-format           | Better memory utilization              |
+| **User Experience**| Manual parameter input                   | Interactive menu + defaults               | Lower learning curve                   |
+| **Code Maintenance**| Legacy Fortran (`goto`, fixed-format)    | Modern Fortran + modular Shell           | Easier to extend/maintain              |
 
 ## 2. Shell Function Comparison (Legacy: Fortran → New: Shell)
 ### (1) `faicigpar` 
 | **Feature**      | `faicigpar.f` (Legacy)                   | `faicigpar()` (New)                     |
 |------------------|------------------------------------------|------------------------------------------|
 | **Input Validation** | None                                  | Checks file existence & pick ranges      |
+| **Output Precision** | Fixed `f10.4`/`f10.8`                 | Dynamic `printf "%.4f,%.8f"`             |
+| **Temp Files**    | Requires `nciclo.txt`/`mpicks.txt`      | Direct variable reading                  |
+| **Error Handling** | Silent crashes                         | Explicit errors with `exit 1`            |
 
 ### (2) `aggiungilambda` 
 | **Feature**      | `aggiungilambda.f` (Legacy)             | `aggiungilambda()` (New)                |
 |------------------|------------------------------------------|------------------------------------------|
 | **Data Consistency** | No checks                             | Validates line counts                    |
+| **Execution**    | Direct file I/O                         | Pipeline processing (`sed` + `awk`)      |
+| **Output Format** | Fixed columns                          | Dynamic alignment + scientific notation  |
 
 ### (3) `sommavel` 
 - Legacy: Legacy sommavel.f
