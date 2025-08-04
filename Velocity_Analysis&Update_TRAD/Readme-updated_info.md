@@ -173,9 +173,9 @@ graph TD
 ### Modern Workflow
 ```mermaid
 graph TD
-    A[./CIG_extract.sh] --> B[VelocityAnalysis.sh]
-    B --> C[./UpdateV.sh (Free Format Fortran compiled)]
-    C --> D[./UpdateV2M.sh (Free Format Fortran compiled)]
+    A[./CIG_extract.sh] --> B[./VelocityAnalysis.sh]
+    B --> C[./UpdateV.sh<br>(Free Format Fortran compiled)]
+    B --> D[./UpdateV2M.sh<br>(Free Format Fortran compiled)]
 ```
 
 ---
