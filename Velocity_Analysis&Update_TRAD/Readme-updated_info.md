@@ -24,9 +24,9 @@
 | **Data Consistency** | No checks                             | Validates line counts                    |
 
 ### (3) `sommavel` 
-- Legacy:
+- Legacy: Legacy sommavel.f
 ```fortran
-! Legacy sommavel.f
+! Fixed Format, check the difference between free format
       program sommavel
       do i=1,nx                    ! Hardcoded loops
          do j=1,nz
@@ -35,9 +35,8 @@
          enddo
       enddo
 ```
-- New:
+- New: Modern Shell replacement (Fuction add_velocity_models())
 ```bash
-# Modern Shell replacement (add_velocity_models())
 paste vfile.a velres.dat | awk '{
     printf "%.8f\n", $1+$2        # Precise output formatting
 }' > vfile.updated
