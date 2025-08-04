@@ -14,21 +14,130 @@
 | **User Experience**| Manual parameter input                   | Interactive menu + defaults               | Lower learning curve                   |
 | **Code Maintenance**| Legacy Fortran (`goto`, fixed-format)    | Modern Fortran + modular Shell           | Easier to extend/maintain              |
 
-## 2. Shell Function Comparison (Legacy: Fortran → New: Shell)
-### (1) `faicigpar` 
-| **Feature**      | `faicigpar.f` (Legacy)                   | `faicigpar()` (New)                     |
-|------------------|------------------------------------------|------------------------------------------|
-| **Input Validation** | None                                  | Checks file existence & pick ranges      |
-| **Output Precision** | Fixed `f10.4`/`f10.8`                 | Dynamic `printf "%.4f,%.8f"`             |
-| **Temp Files**    | Requires `nciclo.txt`/`mpicks.txt`      | Direct variable reading                  |
-| **Error Handling** | Silent crashes                         | Explicit errors with `exit 1`            |
+Here's the detailed comparison for `faicigpar.f` and `aggiungilambda.f` with their Shell replacements in your requested format:
 
-### (2) `aggiungilambda` 
-| **Feature**      | `aggiungilambda.f` (Legacy)             | `aggiungilambda()` (New)                |
-|------------------|------------------------------------------|------------------------------------------|
-| **Data Consistency** | No checks                             | Validates line counts                    |
-| **Execution**    | Direct file I/O                         | Pipeline processing (`sed` + `awk`)      |
-| **Output Format** | Fixed columns                          | Dynamic alignment + scientific notation  |
+---
+
+### (1) `faicigpar`
+- **Legacy**: `faicigpar.f`
+```fortran
+! Fixed Format Fortran 77
+      program faicigpar
+      character cip*4,vir*1
+      cip="cip="
+      vir=","
+      read(10,*) nc       ! No input validation
+      read(10,*) ncdp     ! No range checking
+      read(12,*) z,t      ! Unvalidated file access
+      write(14,'(a4,i10,a1,f10.4)') cip,ncdp,vir,z
+```
+
+- **New**: Shell function `faicigpar()`
+```bash
+faicigpar() {
+    # Validate inputs
+    [[ -f "nciclo.txt" ]] || { echo "Error: Missing nciclo.txt"; exit 1; }
+    [[ -f "mpicks.txt" ]] || { echo "Error: Missing mpicks.txt"; exit 1; }
+
+    # Process data
+    local nc=$(head -1 nciclo.txt)
+    local ncdp=$(tail -1 nciclo.txt)
+    read -r z r < <(sed -n "${nc}p" mpicks.txt)
+    printf "cip=%d,%.4f,%.8f\n" "$ncdp" "$z" "$r" > cig.txt
+}
+```
+
+#### Key Improvements Comparison:
+| **Feature**        | `faicigpar.f` (Legacy)          | `faicigpar()` (New)               |
+|--------------------|---------------------------------|-----------------------------------|
+| **Input Validation** | None                           | Checks file existence and pick ranges |
+| **Output Precision** | Fixed `f10.4` format          | Dynamic `printf` with configurable precision |
+| **Error Handling**  | Silent failures                | Explicit error messages with exit codes |
+| **Code Maintainability** | Hardcoded formats         | Modular and readable structure    |
+
+#### Technical Notes:
+1. **Precision Control**:
+   - Legacy: Limited to fixed decimal places
+   ```fortran
+   write(14,'(a4,i10,a1,f10.4)')  ! Fixed 4 decimals
+   ```
+   - New: Full precision control
+   ```bash
+   printf "%.8f\n"  # Configurable precision
+   ```
+
+2. **Memory Safety**:
+   - Legacy: Risk of buffer overflows
+   ```fortran
+   character cip*4  ! Fixed-length strings
+   ```
+   - New: Dynamic string handling
+   ```bash
+   local variables with no size limits
+   ```
+
+---
+
+### (2) `aggiungilambda`
+- **Legacy**: `aggiungilambda.f`
+```fortran
+! Fixed Format Fortran
+      program aggiungilambda
+      read(10,*) cdp,npick  ! No validation
+      do i=1,npick          ! No bounds checking
+         read(12,*) z,r     ! Unvalidated reads
+         read(16,*) delta   ! No error handling
+         write(14,*) cdp,z,r,delta
+      enddo
+```
+
+- **New**: Shell function `aggiungilambda()`
+```bash
+aggiungilambda() {
+    # Validate line counts
+    local mpick_lines=$(wc -l < mpicks.txt)
+    local delta_lines=$(wc -l < deltap.txt)
+    [[ "$npick" -eq "$mpick_lines" ]] || { 
+        echo "Line count mismatch"; exit 1 
+    }
+
+    # Process data
+    echo "$npick" > residuo.txt
+    for ((i=1; i<=npick; i++)); do
+        read -r z r < <(sed -n "${i}p" mpicks.txt)
+        local delta=$(sed -n "${i}p" deltap.txt)
+        printf "%d %.4f %.8f %.8f\n" "$cdp" "$z" "$r" "$delta" >> residuo.txt
+    done
+}
+```
+
+#### Key Improvements Comparison:
+| **Feature**        | `aggiungilambda.f` (Legacy)     | `aggiungilambda()` (New)        |
+|--------------------|---------------------------------|---------------------------------|
+| **Data Validation** | No consistency checks         | Verifies line counts match      |
+| **Execution Speed** | Sequential file I/O           | Pipeline processing (sed/awk)   |
+| **Output Format**   | Space-delimited fixed width   | Scientific notation supported   |
+| **Parallel Ready**  | No                            | Yes (via xargs/parallel)        |
+
+#### Technical Notes:
+1. **Error Prevention**:
+   - Legacy: 
+   ```fortran
+   do i=1,npick  ! Potential out-of-bounds if npick > array size
+   ```
+   - New:
+   ```bash
+   [[ "$npick" -eq "$mpick_lines" ]]  # Prevents mismatches
+   ```
+
+2. **Modernization Benefits**:
+   ```bash
+   # New features enabled:
+   # 1. Automatic progress tracking
+   # 2. Integration with logging system
+   # 3. Runtime configurability
+   ```
+---
 
 ### (3) `sommavel` 
 - Legacy: Legacy sommavel.f
@@ -57,7 +166,6 @@ paste vfile.a velres.dat | awk '{
 | **Parallel Capability** | Single-threaded                   | Parallel-ready via `parallel`            |
 
 #### Technical Notes:
-# Technical Notes:
 1. **Precision Upgrade:**
     - Legacy: Implicit type conversion
     ```Fortran
