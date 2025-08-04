@@ -24,6 +24,25 @@
 | **Data Consistency** | No checks                             | Validates line counts                    |
 
 ### (3) `sommavel` 
+- Legacy:
+```fortran
+! Legacy sommavel.f
+      program sommavel
+      do i=1,nx                    ! Hardcoded loops
+         do j=1,nz
+            read(10,*) velres      ! No error checking
+            write(16,*) vel+velres ! Fixed format
+         enddo
+      enddo
+```
+- New:
+```bash
+# Modern Shell replacement (add_velocity_models())
+paste vfile.a velres.dat | awk '{
+    printf "%.8f\n", $1+$2        # Precise output formatting
+}' > vfile.updated
+```
+#### Key Improvements Comparison:
 | **Feature**      | `sommavel.f` (Legacy)             | `add_velocity_models()` (New)                |
 |------------------|------------------------------------------|------------------------------------------|
 | **Data Consistency** | No checks                            | Validates line counts                    |
@@ -33,26 +52,26 @@
 
 #### Technical Notes:
 # Technical Notes:
-1. Precision Upgrade:
+1. **Precision Upgrade:**
     - Legacy: Implicit type conversion
     ```Fortran
     ! Fortran f95
     write(16,*) vel+velres  ! Uncontrolled precision
     ```
-    - Modern: Explicit formatting
+    - New: Explicit formatting
     ```bash
     # Shell
     printf "%.8f\n", $1+$2  # Enforced 8-decimal precision
     ```
-2. Memory Optimization:
+2. **Memory Optimization:**
     - Legacy: 
     ```fortran
     ! Legacy static arrays (risk of overflow)
     dimension vel(100000,10000) 
     ```
-    - Modern:
+    - New:
     ```bash
-    # Modern stream processing
+    # New stream processing
     while read -r vel velres; do
         echo "$vel + $velres" | bc
     done < <(paste vfile.a velres.dat)
