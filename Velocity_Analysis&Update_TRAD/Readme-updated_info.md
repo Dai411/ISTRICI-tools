@@ -28,7 +28,8 @@
 |------------------|------------------------------------------|------------------------------------------|
 | **Data Consistency** | No checks                            | Validates line counts                    |
 | **Memory Management** | Static arrays, fixed size           | Stream processing, no memory limits      |
-
+| **Preceision Control**| Implicit single precision           | Explicit `%.8f` format control           |
+| **Parallel Capability** | Single-threaded                   | Parallel-ready via `parallel`            |
 
 ## 3. Fortran Code Upgrade Comparison
 ### 3.1 Language Modernization
