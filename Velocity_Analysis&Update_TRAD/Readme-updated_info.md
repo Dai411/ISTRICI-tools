@@ -45,17 +45,18 @@
     printf "%.8f\n", $1+$2  # Enforced 8-decimal precision
     ```
 2. Memory Optimization:
-
-```fortran
-! Legacy static arrays (risk of overflow)
-dimension vel(100000,10000) 
-```
-```bash
-    -o Modern stream processing
-while read -r vel velres; do
-    echo "$vel + $velres" | bc
-done < <(paste vfile.a velres.dat)
-```
+    - Legacy: 
+    ```fortran
+    ! Legacy static arrays (risk of overflow)
+    dimension vel(100000,10000) 
+    ```
+    - Modern:
+    ```bash
+    # Modern stream processing
+    while read -r vel velres; do
+        echo "$vel + $velres" | bc
+    done < <(paste vfile.a velres.dat)
+    ```
 
 ## 3. Fortran Code Upgrade Comparison
 ### 3.1 Language Modernization
