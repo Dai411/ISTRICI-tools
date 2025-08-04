@@ -1,8 +1,9 @@
 # Seismic Velocity Analysis Workflow Upgrade Documentation
 
 **Filename**: `README_What_Updated.md`  
-**Version**: 2.1 (Updated 2025-08-04)  
-**Author**: Lining Yang @CNR, Italia
+**Version**: 2.1 
+**Time**: 2025-08-04  
+**Author**: Lining Yang @CNR-ISMAR, Bologna, Italia
 
 ## Excutative Summary
 This documentation details the modernization of the Seismic Velocity Analysis workflow, transitioning from legacy Fortran 77 to an integrated Shell/Modern Fortran solution. Key upgrades include:
