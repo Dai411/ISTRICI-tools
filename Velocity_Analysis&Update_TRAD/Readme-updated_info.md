@@ -174,8 +174,8 @@ graph TD
 ```mermaid
 graph TD
     A[./CIG_extract.sh] --> B[./VelocityAnalysis.sh]
-    B --> C[./UpdateV.sh<br>(Free Format Fortran compiled)]
-    B --> D[./UpdateV2M.sh<br>(Free Format Fortran compiled)]
+    B --> C[./UpdateV.sh <br>(Free Format Fortran compiled)]
+    B --> D[./UpdateV2M.sh <br>(Free Format Fortran compiled)]
 ```
 
 ---
