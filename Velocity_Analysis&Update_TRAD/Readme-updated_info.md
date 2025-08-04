@@ -363,8 +363,9 @@ graph TD
 ### 5.1. Legacy Execution Approach (`VELOCITYANALISYS.sh`)
 ```bash
 # Direct execution without verification
-./faicigpar  # Immediately runs potentially modified binary
-./sommavel   # No checksum validation
+./faicigpar   # Immediately runs potentially modified binary
+./aggiulambda
+./sommavel    # No checksum validation
 ```
 
 **Risks**:  
@@ -442,8 +443,9 @@ verify_binaries() {
 Before (Legacy)             After (Modern)
 -------------------------------------------------
 1. ./faicigpar            → 1. verify_binaries
-2. ./sommavel             → 2. compile_if_needed
-3. (no verification)      → 3. execute_verified
+2. ./aggiulambda          →
+3. ./sommavel             → 2. compile_if_needed
+4. (no verification)      → 3. execute_verified
 ```
 
 ### 5.5 Performance Statistics
