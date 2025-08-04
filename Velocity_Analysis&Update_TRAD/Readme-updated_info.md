@@ -164,7 +164,7 @@ end program
 ### Legacy Workflow
 ```mermaid
 graph TD
-    A[sh CIGextraction] --> B[Manual Fortran Compile \n f95 -o * *.f]
+    A[sh CIGextraction] --> B[Manual Fortran Compile: <br>f95 -o * *.f]
     B --> C[sh VELOCITYANALISYS]
     C --> D[sh UPDATEvelocity_detail]
     C --> E[sh UPDATEvelocity2marinedata_detail]
