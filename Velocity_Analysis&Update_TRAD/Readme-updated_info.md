@@ -317,7 +317,7 @@ validate_upgrade() {
 - New: Free-Format F90
 ```fortran
 module shared_params
-      integer :: nz, nx, maxpicks=100
+   integer :: nz, nx, maxpicks=100
 end module
 
 program faivelres
