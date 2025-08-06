@@ -5,7 +5,7 @@ plot_vfile.py - Velocity Field Visualization Tool with Horizon Plotting
 
 Author: Lining YANG @ CNR-ISMAR, BOLOGNA, ITALY
 Date: 2025-05-30
-Last Modified: 2025-07-22
+Last Modified: 2025-08-06
 License: BSD-3-Clause
 
 Description:
@@ -146,8 +146,8 @@ def main():
         im.set_clim(1000, 10000)
 
         def format_coord(x_val, y_val):
-            x_idx = int(np.clip((x_val - x[0]) / args.dx, 0, args.nx - 1))
-            y_idx = int(np.clip((y_val - z[0]) / args.dz, 0, args.nz - 1))
+            x_idx = int(np.clip((x_val - x[0]) / params['dx'], 0, params['nx'] - 1))
+            y_idx = int(np.clip((y_val - z[0]) / params['dz'], 0, params['nz'] - 1))
             val = vel[y_idx, x_idx]
             return f"x={x_val:.1f} m, z={y_val:.1f} m, v={val:.1f} m/s"  
 
