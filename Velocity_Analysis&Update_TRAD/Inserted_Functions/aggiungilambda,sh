@@ -1,3 +1,15 @@
+# -----------------------------------------------------------------------------
+# Function: aggiungilambda - Replaces the Fortran program of the same name
+# 
+# Purpose: Combines pick data with velocity perturbations
+# Inputs:
+#   - numeropick.txt: CDP number and pick count
+#   - mpicks.txt: Depth and r-value picks
+#   - deltap.txt: Velocity perturbation values
+# Outputs:
+#   - residuo.txt: Residual data file
+# -----------------------------------------------------------------------------
+
 aggiungilambda() {
     # Verify required input files exist
     if [[ ! -f "numeropick.txt" || ! -f "mpicks.txt" || ! -f "deltap.txt" ]]; then
