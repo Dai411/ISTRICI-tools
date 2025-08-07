@@ -109,7 +109,7 @@ aggiungilambda() {
 
 **Modern Shell Implementation**:
 ```bash
-add_velocity_models() {
+sommavel() {
     paste vfile.a velres.dat | awk '{
         printf "%.8f\n", $1+$2    # Precise output formatting
     }' > vfile.updated
