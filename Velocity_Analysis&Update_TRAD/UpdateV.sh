@@ -425,7 +425,17 @@ compile_embedded_faivelres() {
 }
 
 # -----------------------------------------------------------------------------
-# Add velocity models (replaces sommavel.f)
+# Function: Sommavel - Adds two velocity models. Replaces sommavel.f
+# 
+# Purpose: Adds velocity perturbations (velres.dat) to an existing velocity model (vfile.a)
+#          to create an updated velocity model (vfile.updated).
+# Inputs:
+#   - velres.dat: Velocity perturbation file.
+#   - vfile.a: Existing velocity model file.
+#   - v.par_v: Parameter file containing grid dimensions (nz, dz, fz, nx, dx, fx) 
+#              and CDP range parameters (ncdpmin, cdpmax, dcdp).
+# Outputs:
+#   - vfile.updated: Updated velocity model file.
 # -----------------------------------------------------------------------------
 sommavel() {
     log info "Adding velocity models..."
