@@ -24,7 +24,7 @@
 #   - Modified by: Lining YANG, CNR-ISMAR Bologna
 # =============================================================================
 FORT_FAIVELRES_CODE=$(cat <<'EOF'
-program faivelres
+    program faivelres
     integer, parameter :: maxpicks = 100  ! Maximum picks per CDP
     real, allocatable :: res(:,:,:), resint(:,:)
     integer :: nz, dz, fz, nx, dx, fx, cdpmin, cdpmax, dcdp
