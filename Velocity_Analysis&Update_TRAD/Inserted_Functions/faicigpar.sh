@@ -1,3 +1,14 @@
+# -----------------------------------------------------------------------------
+# Function: faicigpar - Replaces the Fortran program of the same name
+# 
+# Purpose: Processes pick data to generate CIG parameters
+# Inputs: 
+#   - nciclo.txt: Contains pick index and CDP number
+#   - mpicks.txt: Contains depth and r-value picks
+# Outputs:
+#   - cig.txt: Formatted CIG parameters
+# -----------------------------------------------------------------------------
+
 faicigpar() {
     # Verify required input files exist
     if [[ ! -f "nciclo.txt" || ! -f "mpicks.txt" ]]; then
