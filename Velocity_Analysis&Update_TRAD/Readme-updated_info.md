@@ -62,7 +62,7 @@ faicigpar() {
 
 ### 2.2 `aggiungilambda` Replacement
 
-**Legacy Fortran**:
+**Legacy Fortran (`aggiungilambda.f`)**:
 ```fortran
 ! Fixed Format Fortran
       program aggiungilambda
@@ -96,7 +96,7 @@ aggiungilambda() {
 
 ### 2.3 `sommavel` Replacement
 
-**Legacy Fortran**:
+**Legacy Fortran (`sommavel.f`)**:
 ```fortran
 ! Fixed Format
       program sommavel
