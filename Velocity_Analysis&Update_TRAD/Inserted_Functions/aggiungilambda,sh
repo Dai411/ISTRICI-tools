@@ -1,0 +1,45 @@
+aggiungilambda() {
+    # Verify required input files exist
+    if [[ ! -f "numeropick.txt" || ! -f "mpicks.txt" || ! -f "deltap.txt" ]]; then
+        echo "ERROR: [aggiungilambda] Required files not found"
+        exit 1
+    fi
+    
+    # Read CDP number and pick count
+    IFS=',' read -r cdp npick < numeropick.txt
+    
+    # Validate pick count
+    if ! [[ "$npick" =~ ^[0-9]+$ ]] || [[ $npick -le 0 ]]; then
+        echo "ERROR: [aggiungilambda] Invalid pick count: $npick"
+        exit 1
+    fi
+    
+    # Check file consistency
+    local mpick_lines=$(wc -l < mpicks.txt)
+    local delta_lines=$(wc -l < deltap.txt)
+    
+    if [[ $npick -ne $mpick_lines || $npick -ne $delta_lines ]]; then
+        echo "ERROR: [aggiungilambda] Line count mismatch:"
+        echo "  Expected picks: $npick"
+        echo "  mpicks.txt lines: $mpick_lines"
+        echo "  deltap.txt lines: $delta_lines"
+        exit 1
+    fi
+    
+    # Create output file with pick count header
+    echo "$npick" > residuo.txt
+    
+    # Process each pick
+    for ((i=1; i<=npick; i++)); do
+        # Read depth and r-value
+        read -r z r < <(sed -n "${i}p" mpicks.txt)
+        
+        # Read delta value (velocity perturbation)
+        local delta=$(sed -n "${i}p" deltap.txt)
+        
+        # Format output line (preserve decimal precision)
+        printf "%d %.4f %.8f %.8f\n" "$cdp" "$z" "$r" "$delta" >> residuo.txt
+    done
+    
+    echo "Generated residuo.txt with $npick records for CDP $cdp"
+}
