@@ -425,7 +425,7 @@ compile_embedded_faivelres() {
 }
 
 # -----------------------------------------------------------------------------
-# Function: Sommavel - Adds two velocity models. Replaces sommavel.f
+# Function: Sommavel - Adds two velocity models (replaces sommavel.f)
 # 
 # Purpose: Adds velocity perturbations (velres.dat) to an existing velocity model (vfile.a)
 #          to create an updated velocity model (vfile.updated).
