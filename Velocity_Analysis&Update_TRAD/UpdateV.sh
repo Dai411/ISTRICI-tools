@@ -427,7 +427,7 @@ compile_embedded_faivelres() {
 # -----------------------------------------------------------------------------
 # Add velocity models (replaces sommavel.f)
 # -----------------------------------------------------------------------------
-add_velocity_models() {
+sommavel() {
     log info "Adding velocity models..."
     local required_files=("velres.dat" "vfile.a" "v.par_v")
     for file in "${required_files[@]}"; do
@@ -547,7 +547,7 @@ main_workflow() {
     }
 
     # Step 5: Update velocity model
-    add_velocity_models || {
+    sommavel || {
         log error "Velocity model addition failed"
         return 1
     }
