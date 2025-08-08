@@ -3,8 +3,7 @@
 ## The background of the ISTRICI 
 
 The ISTRICI tool was orginally produced by Umberta Tinivella and Michela Giustiniani at National institute of Oceanography and Applied Geophysics - OGS. 
-The ISTRICI stands for the Structural Inversion of Common Image Gathers. The details about the ISTRICI can be found in the article '*ISTRICI - Tools for facilitating 
-seismic depth imaging and velocity analysis with seismic unix*' in the journal ***Computers and Geosciences*** in 2023, which is **OPEN ACCESS**, can de downloaded from 
+The ISTRICI stands for the Structural Inversion of Common Image Gathers. The details about the ISTRICI can be found in the article '*ISTRICI - Tools for facilitating seismic depth imaging and velocity analysis with seismic unix*' in the journal ***Computers and Geosciences*** in 2023, which is **OPEN ACCESS**, can de downloaded from 
 the below links:  
 
 https://www.sciencedirect.com/science/article/pii/S0098300423001620?via%3Dihub  
