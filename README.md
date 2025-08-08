@@ -13,7 +13,7 @@ The original `Readme_ISTRICI` file is seen at the below link: https://github.com
 
 ## The trigger of this projects  
 
-The original codes in the project provided by Dr Tinivella and Dr Giustiniani are listed in the repository `ISTRICI`  
+The original codes are provided by Dr Tinivella and Dr Giustiniani listed in the repository `utinivella/ISTRICI`: 
 https://github.com/utinivella/ISTRICI  
 However, the raw codes are not well maintained and developped after all the geophysics is not a very 'popular major'.  The author had a chance to use this tool `ISTRICI` in processing 
 some seismic survey lines in the Tryhenian Sea. During this procedure, I wrote some tools which can be used during the Pre-stack Depth Migration (PSDM) based on the Python. Also, I 
