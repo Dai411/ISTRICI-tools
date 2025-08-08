@@ -3,16 +3,12 @@
 ## The background of the ISTRICI 
 
 The ISTRICI tool, short for Structural Inversion of Common Image Gathers, was originally developed by Umberta Tinivella and Michela Giustiniani at the National Institute of Oceanography and Applied Geophysics - OGS. 
-Detailed information about ISTRICI can be found in the open access article "**ISTRICI - Tools for facilitating seismic depth imaging and velocity analysis with seismic unix**", published in ***Computers and Geosciences*** in 2023. The article is available for download at the following links:
-
+Detailed information about ISTRICI can be found in the open access (OA) article "**ISTRICI - Tools for facilitating seismic depth imaging and velocity analysis with seismic unix**", published in ***Computers and Geosciences*** in 2023. The article is available for download at the following links:  
 https://www.sciencedirect.com/science/article/pii/S0098300423001620?via%3Dihub  
-or  
-doi: https://doi.org/10.1016/j.cageo.2023.105458.  
+or DOI: https://doi.org/10.1016/j.cageo.2023.105458 cited as   
 
-and cited as   
-`
-Tinivella, U. and Giustiniani, M., 2023. ISTRICI–Tools for facilitating seismic depth imaging and velocity analysis with seismic unix. Computers & Geosciences, 180, p.105458.  
-`  
+`Tinivella, U. and Giustiniani, M., 2023. ISTRICI–Tools for facilitating seismic depth imaging and velocity analysis with seismic unix. Computers & Geosciences, 180, p.105458.`
+    
 The original `Readme_ISTRICI` file is seen at the below link: https://github.com/Dai411/ISTRICI-OGS/blob/main/README_ISTRICI  
 
 ## The trigger of this projects  
