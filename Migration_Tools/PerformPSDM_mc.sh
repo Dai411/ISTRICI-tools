@@ -189,6 +189,13 @@ fi
 # ==============================================================================
 echo ">>> STAGE 4: Merging, sorting results and cleaning up..."
 
+echo "--> Cleaning up split files to free up disk space..."
+rm -rf $SPLIT_DIR
+echo "--> Cleaning up calculation temporary files..."  
+rm -f input_unif pvfile csfile tvfile
+rm -f input_cor.su
+rm -f tfile
+
 # --- Merge kd.data_complete ---
 echo "--> Merging and sorting main output files..."
 rm -f kd.data_complete_unsorted kd.data_complete
@@ -223,14 +230,10 @@ echo "    stackPSDM.su       (stacked PSDM section)"
 echo "    stackPSDM_no.su    (optional: stacked near-offset section)"
 
 # --- Final Clean up ---
-echo "--> Cleaning up all temporary files..."
-rm -f input_unif pvfile csfile tvfile
-rm -f input_cor.su
-rm -f tfile
+echo "--> Cleaning up remaining temporary files..."
 rm -f job_*.tmp
 rm -f outfile1_*.tmp
 rm -f job_*.stderr.log
-rm -rf $SPLIT_DIR
 
 echo ">>> PSDM processing completed successfully!"
 echo ">>>>>>>> Wish you a great result! <<<<<<<<"
