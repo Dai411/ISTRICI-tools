@@ -188,7 +188,6 @@ fi
 # Required Seismic Unix components: susort, suwind, sustack
 # ==============================================================================
 echo ">>> STAGE 4: Merging, sorting results and cleaning up..."
-
 echo "--> Cleaning up split files to free up disk space..."
 rm -rf $SPLIT_DIR
 echo "--> Cleaning up calculation temporary files..."  
