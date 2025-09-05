@@ -3,6 +3,7 @@
 # Final Production-Grade PSDM Script with Overlap Zone & User-Corrected Merging
 # Author: Lining YANG @ CNR-ISMAR, Bologna, Italy
 # Date: 05 Spetember 2025
+# License: BSD-3-Clause
 # 
 # Description:
 #       This script performs a robust Pre-Stack Depth Migration (PSDM) on seismic
