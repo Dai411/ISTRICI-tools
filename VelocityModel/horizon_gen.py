@@ -3,7 +3,7 @@
 #
 # vel_gen.py - Interactive Velocity Model Generator
 # Author: Lining YANG @ CNR-ISMAR Bologna
-# Date: 2025-07-25
+# Date: 2025-09-09
 # License: BSD-3-Clause
 # =====================================================================================
 # Description:
