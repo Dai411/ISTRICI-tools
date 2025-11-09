@@ -68,13 +68,20 @@ echo ""
 # Please have a think what have been updated during process
 # ----------------------------------------------------------------
 echo "Kirchhoff Migration Parameters:"
-echo "Absolute offset maximum (please check if you have thinned raw data):"
-read off0
-
-read doff
-read noff
-read dxm
+echo "Please check if you have thinned raw data!"
+echo "Absolute offset maximum:"
 read offmax
+echo "Sampling interval of mid points (trace header d2):"
+read dxm
+echo "Far-offset increment in CIG output (in metre with the sign):"
+read off0
+echo "Offset increments in CIG output (in metre with the sign):"
+read doff
+echo "Number of offsets in CIG output:"
+read noff
+echo "Maximumnumber of input traces to be migrated:"
+echo "Note:equal or greater than the number trace in the seismic data"
+echo "I suggest a bit greater or you may encounter failure in allocating memroy"
 read ntr
 
 # --- Overlap Zone Parameters ---
