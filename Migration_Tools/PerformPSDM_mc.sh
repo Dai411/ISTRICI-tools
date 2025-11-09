@@ -25,11 +25,11 @@ set -u
 #########################################
 # User inputs and grid parameters
 #########################################
-inputsu="MEDOC_9_2D_sorted.su"
-vfile="vfilec_651_161"
-output_stack="stackPSDM.su"
+inputsu="*.su"
+vfile="vfile_model"
 
 # --- Time Sampling Parameters ---
+# --- nt*dt = depth in TWTs ---
 nt=2251
 dt=0.004
 # --- Depth & Spatial Grid Parameters ---
