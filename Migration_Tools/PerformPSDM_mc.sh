@@ -22,36 +22,46 @@
 set -e
 set -u
 
-#########################################
+###################################################
 # User inputs and grid parameters
-#########################################
+# If you are familar, you can hard-core parameters 
+###################################################
+echo "Which is your input SU data?"
+read inputsu
+echo "Which is your velocity model (Please check the size)?"
+read vfile
+
 echo "Please insert the limit coordinates of the model"
 echo "xini="
 read xini
 echo "xfin="
 read xfin
 
-inputsu="*.su"
-vfile="vfile_model"
+echo "What are time Sampling Parameters for ray tracing:nt, dt(s)?"
+echo "nt*dt = depth in TWTs" 
+echo "nt="
+read nt
+echo "dt(in seconds)="
+read dt
 
-# --- Time Sampling Parameters ---
-# --- nt*dt = depth in TWTs ---
-nt=2251
-dt=0.004
-# --- Depth & Spatial Grid Parameters ---
-nz=161
-dz=50
-fz=0
+echo "What are the Depth & Spatial Grid Parameters for vfile?"
+echo "nz,dz,fz?"
+read nz
+read dz
+read fz
+echo ""
+echo "nx,dx,fx?"
+read nx 
+read dx 
+read fx
+echo ""
 
-nx=651 
-dx=200 
-fx=0
-
-# --- Source & Receiver Parameters ---
-# --- Suggestion: ns=nx/2 ds=2*dx fs=fx ---
-fs=0
-ns=326 
-ds=400
+echo "What are source & Receiver Parameters (for Kirchhoff Migration)?"
+echo "Suggestion: ns=nx/2 ds=2*dx fs=fx"
+read fs
+read ns 
+read ds
+echo ""
 
 # ----------------------------------------------------------------
 # Migration Parameters: These value are from the Report
