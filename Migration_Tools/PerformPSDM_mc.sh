@@ -25,6 +25,12 @@ set -u
 #########################################
 # User inputs and grid parameters
 #########################################
+echo "Please insert the limit coordinates of the model"
+echo "xini="
+read xini
+echo "xfin="
+read xfin
+
 inputsu="*.su"
 vfile="vfile_model"
 
@@ -84,8 +90,6 @@ echo "--> Cleanup complete. Starting a fresh run."
 # ==============================================================================
 echo ">>> STAGE 1: Pre-processing..."
 echo "--> Generating 2D uniform velocity model..."
-xini=0; 
-xfin=130000
 
 echo "$xini 0" > input_unif; echo "$xfin 0" >> input_unif; echo "1.0 -99999" >> input_unif
 unif2 < input_unif > pvfile ninf=0 npmax=50000 nz=$nz dz=$dz fz=$fz nx=$nx dx=$dx fx=$fx v00=1
