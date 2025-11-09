@@ -64,15 +64,18 @@ read ds
 echo ""
 
 # ----------------------------------------------------------------
-# Migration Parameters: These value are from the Report
-# (Better not to change them if you have the correct information)
+# Migration Parameters: These value should be available from the Report
+# Please have a think what have been updated during process
 # ----------------------------------------------------------------
-off0=120 
-doff=12.5 
-noff=276 
-dxm=6.25 
-offmax=3600 
-ntr=800000
+echo "Kirchhoff Migration Parameters:"
+echo "Absolute offset maximum (please check if you have thinned raw data):"
+read off0
+
+read doff
+read noff
+read dxm
+read offmax
+read ntr
 
 # --- Overlap Zone Parameters ---
 # To ensure continuity across chunks, we define an overlap zone.
