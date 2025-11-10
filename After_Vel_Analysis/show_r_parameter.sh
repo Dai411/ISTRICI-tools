@@ -84,8 +84,8 @@ INPUT_FILE=$2
 SAVE_MODE=${3:-"no"}
 
 # r-scan parameters
-NR=51         # Number of r-values
-DR=0.01       # r sampling interval
+NR=26         # Number of r-values
+DR=0.02       # r sampling interval
 FR=-0.25      # Starting r-value
 DZRATIO=2     # Depth ratio for scanning
 
@@ -110,7 +110,7 @@ fi
 echo "[INFO] Displaying CIG gather for CDP $CDP"
 suxwigb < "$TMPFILE" perc=98 \
     label1="Depth (m)" label2="Offset (m)" \
-    title="CIG $CDP" key=offset wbox=700 hbox=500 & 
+    title="CIG $CDP" key=offset wbox=700 hbox=1100 &
 
 echo "[INFO] Performing r-scan analysis..."
 surelan < "$TMPFILE" dzratio=$DZRATIO nr=$NR dr=$DR fr=$FR | \
@@ -136,8 +136,9 @@ echo "[INFO] Displaying r-scan results..."
 suximage < "$OUTFILE" perc=98 \
     title="r-scan for CDP $CDP" \
     label1="Depth (m)" label2="r-parameter" \
-    grid1=1 grid2=1 \
+    grid1=solid grid2=solid \
     legend=1 cmap=hsv2 \
+    wbox=700 hbox=1100 \
     f2=$FR d2=$DR &
 
 # Step 5: Handle picking
@@ -146,17 +147,18 @@ if [ "$SAVE_MODE" = "--save" ]; then
     suximage < "$OUTFILE" perc=98 mpicks="$PICKFILE" \
         title="RIGHT-click to pick, MIDDLE-click to finish" cmap=hsv2 legend=1 \
         label1="Depth (m)" label2="r-parameter" \
-        grid1=1 grid2=1
+        grid1=solid grid2=solid \
+        wbox=700 hbox=1100
     check_pickfile "$PICKFILE"
 else
     # New logic: Show both windows first, then ask after they close
     echo "[INFO] Display windows opened - interact with them first"
     echo "  - In r-scan window: RIGHT-click to pick, 's' to store temporarily"
     echo "  - Close both windows when done to proceed"
-    
+
     # Wait for windows to close
     wait
-    
+
     # Check if any picks were made (SU stores picks in memory before writing)
     if [[ -f "$PICKFILE" ]]; then
         echo
