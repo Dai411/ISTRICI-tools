@@ -85,9 +85,11 @@ echo "I suggest a bit greater or you may encounter failure in allocating memroy"
 read ntr
 
 # --- Overlap Zone Parameters ---
-# To ensure continuity across chunks, we define an overlap zone.
-# if dx=200, cdp=50 means 10 kilometer overlapped region
-OVERLAP_CDPS=50
+echo "To ensure continuity across chunks, we define an overlap zone:"
+echo "Suggestion: if dx=200, cdp=50 means 10 kilometer overlapped region"
+echo "What is the size for overlapped region do you want?"
+echo "OVERLAP_CDPS= "
+read OVERLAP_CDPS
 
 # ==============================================================================
 # STAGE 0: Initial Cleanup (make the script idempotent)
