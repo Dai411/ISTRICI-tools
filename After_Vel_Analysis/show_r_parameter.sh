@@ -5,7 +5,7 @@
 # Version: 1.2
 # License: BSD 3-Clause License
 # Date: 2025-07-08 19：47
-# Last Modified: 2025-07-17 12:10
+# Last Modified: 2025-11-12 20:10
 #
 # Description:
 #   This script extracts a specific Common Depth Point (CDP) gather from a seismic
@@ -33,6 +33,10 @@
 # Requirements:
 #   - SU (Seismic Unix) tools: suwind, surelan, suchw, suximage, supsimage
 #   - A graphical environment with X11 support for visualization.
+#
+# Suggestion:
+#    - Increase the parameter 'DZRATIO' can affect the presentation of energy concentration  
+#    - Please type 'surelan' for notes in changing Optinal Parameters
 #
 # Notes:
 #   - Run this script in a graphical terminal session.
@@ -84,6 +88,7 @@ INPUT_FILE=$2
 SAVE_MODE=${3:-"no"}
 
 # r-scan parameters
+# Please check the description of 'surelan' for more information
 NR=26         # Number of r-values
 DR=0.02       # r sampling interval
 FR=-0.25      # Starting r-value
