@@ -89,6 +89,8 @@ SAVE_MODE=${3:-"no"}
 
 # r-scan parameters
 # Please check the description of 'surelan' for more information
+# You can use the below default value to see the difference of semblance
+# NR=51, DR=0.01, FR=-0.25, DZRATIO=5
 NR=26         # Number of r-values
 DR=0.02       # r sampling interval
 FR=-0.25      # Starting r-value
