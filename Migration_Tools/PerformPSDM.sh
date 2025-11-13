@@ -1,4 +1,23 @@
 #!/bin/bash
+# =========================================
+# Tool: Conduct Kirchhoff Migration 
+# Author: Lining YANG @CNR-ISMAR, Bologna
+# License: BSD 3-Clause License
+# Last Modified: 2025-11-13 20:30
+#
+# Description:
+#    This script conduct the 2 Dimensional Pre-stack Krichhoff Depth migration  
+#    from a processed SU (Seismic Unix) data with a provided velocity model. The 
+#    main output data is a migrated z-domain traces. if the velocity anlaysis is  
+#    needed (set 'npv>0'), the additional output contains extra amplitude.  
+#    
+#
+# 
+# Original version:
+#    - https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/PerformPSDM
+#
+#
+
 set -e
 set -u
 
