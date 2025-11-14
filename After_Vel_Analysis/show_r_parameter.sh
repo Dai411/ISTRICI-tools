@@ -144,7 +144,7 @@ suximage < "$OUTFILE" perc=98 \
     title="r-scan for CDP $CDP" \
     label1="Depth (m)" label2="r-parameter" \
     grid1=solid grid2=solid \
-    legend=1 cmap=hsv2 \
+    cmap=hsv2 \
     wbox=700 hbox=1100 \
     f2=$FR d2=$DR &
 
