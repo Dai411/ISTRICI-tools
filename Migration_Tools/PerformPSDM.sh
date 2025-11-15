@@ -7,13 +7,26 @@
 # Last Modified: 2025-11-13 20:30
 #
 # Description:
-#    This script conduct the 2 Dimensional Pre-stack Krichhoff Depth migration 
+#    This script conduct the 2 Dimensional Pre-stack Krichhoff Depth Migration 
 #    from a processed SU (Seismic Unix) data with a provided velocity model. 
 #    The main output data is also in SU format, with migrated z-domain traces. 
 #    if the velocity anlaysis is needed (set 'npv>0'), the additional output  
 #    contains extra amplitude. 
 #
-# 
+# Usage: 
+#    chmod +x PerformPSDM.sh
+#    ./PerformPSDM.sh
+#
+# Requirements:
+#    - Key SU tools: unif2, rayt2d, sukdmig2d
+#    - Optional SU tools: sudivcor (optional), sustack
+#
+# Suggestion:
+#    Read the help documents for the key SU tools in understanding how key
+#    parameters shoud be set and manually changed for depth migration.
+#
+#
+#
 # Original version:
 #    - https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/PerformPSDM
 #
