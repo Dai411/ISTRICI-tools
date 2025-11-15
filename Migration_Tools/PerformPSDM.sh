@@ -1,6 +1,5 @@
 #!/bin/bash
-#        |         |         |         |         |         |         |         #
-# =========================================
+# ============================================================================ #
 # Tool: Conduct Kirchhoff Migration 
 # Author: Lining YANG @CNR-ISMAR, Bologna
 # License: BSD 3-Clause License
