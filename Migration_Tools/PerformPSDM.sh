@@ -187,7 +187,8 @@ sukdmig2d offmax=$offmax dxm=$dxm \
     aperx=10000 angmax=90 \
     fs=$fs ns=$ns ds=$ds ntr=$ntr off0=$off0 noff=$noff doff=$doff \
     mtr=100 verbose=1 npv=1 \
-    ttfile=tfile tvfile=tvfile csfile=csfile outfile1=outfile1_complete \
+    ttfile=tfile tvfile=tvfile csfile=csfile \
+    outfile1=outfile1_complete \
     < input_cor.su > kd.data_complete
  
 echo "   - the migration lateral aperature is $aperx "
