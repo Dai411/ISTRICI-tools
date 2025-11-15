@@ -3,7 +3,7 @@
 # Tool: Conduct Kirchhoff Migration 
 # Author: Lining YANG @CNR-ISMAR, Bologna
 # License: BSD 3-Clause License
-# Last Modified: 2025-11-15 22:30
+# Last Modified: 2025-11-15 23:30
 #
 # Description:
 #    This script conduct the 2 Dimensional Pre-stack Krichhoff Depth Migration 
@@ -51,9 +51,9 @@ echo "Which is your velocity model (Please check the size)?"
 read vfile
 
 echo "Please insert the limit coordinates of the model"
-echo "xini="
+echo "left boundary: xini="
 read xini
-echo "xfin="
+echo "right boundary: xfin="
 read xfin
 
 echo "What are time Sampling Parameters for ray tracing:nt, dt(s)?"
@@ -146,24 +146,25 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 # ============================================================================ #
 # STAGE 1: Pre-processing: 
 #     Set grid, generate vfile, ray tracing, amplitude correction(optional) 
-# You can change the parameters but please check the tutorial documents before
+# Parameters can be set but please check the tutorial documents before
 # ============================================================================ #
 echo ">>> STAGE 1: Pre-processing..."
 echo "--> Generating 2D uniform velocity model..."
 echo $xini 0 >input_unif
 echo $xfin 0 >>input_unif
 echo 1.0 -99999 >>input_unif
-unif2 < input_unif > pvfile  ninf=0 npmax=5000 nz=$nz \
- dz=$dz fz=$fz nx=$nx dx=$dx fx=$fx v00=1
+unif2 ninf=0 npmax=5000 \
+    nz=$nz dz=$dz fz=$fz nx=$nx dx=$dx fx=$fx v00=1\
+    < input_unif > pvfile  
 echo "   - maximum number of points on interfaces is $npmax"
 
 echo "--> Performing 2D ray tracing..."
 rayt2d <"$vfile" \
- nt=$nt dt=$dt fz=$fz nz=$nz dz=$dz fx=$fx nx=$nx dx=$dx \
- fxo=$fx nxo=$nx dxo=$dx fzo=$fz nzo=$nz dzo=$dz fxs=$fs nxs=$ns dxs=$ds \
- fa=-90 na=91 aperx=10000 \
- verbose=1 npv=1 \
- tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
+    nt=$nt dt=$dt fz=$fz nz=$nz dz=$dz fx=$fx nx=$nx dx=$dx \
+    fxo=$fx nxo=$nx dxo=$dx fzo=$fz nzo=$nz dzo=$dz fxs=$fs nxs=$ns dxs=$ds \
+    fa=-90 na=91 aperx=10000 \
+    verbose=1 npv=1 \
+    tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
 echo "   - the ray tracing aperature in x-direction is $aperx"
 echo "   - the first take-off angle of rays (degrees) is $fa"
 echo "   - the number of rays is $na"
