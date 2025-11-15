@@ -42,80 +42,132 @@
 set -e
 set -u
 
-#########################################
-#Input files: *.su and vfile
-#########################################
-inputsu="../MEDOC9_compart_mute100.su"
-vfile="vfile_m0_c1.52k"
+# ==========================================
+# STAGE0: Read User inputs and grid parameters
+# ==========================================
+echo ">>> STAGE 0: SET PARAMETERS"
+echo "Which is your input SU data?"
+read inputsu
+echo "Which is your velocity model (Please check the size)?"
+read vfile
 
-#########################################
-#Output files names
-#########################################
-VERSION="l0_mute100"
+echo "Please insert the limit coordinates of the model"
+echo "xini="
+read xini
+echo "xfin="
+read xfin
+
+echo "What are time Sampling Parameters for ray tracing:nt, dt(s)?"
+echo "nt*dt = depth in TWTs" 
+echo "nt="
+read nt
+echo "dt(in seconds)="
+read dt
+
+echo "What are the Depth & Spatial Grid Parameters for vfile?"
+echo "nz,dz,fz?"
+read nz
+read dz
+read fz
+echo ""
+echo "nx,dx,fx?"
+read nx 
+read dx 
+read fx
+echo ""
+
+echo "What are source & Receiver Parameters (for Kirchhoff Migration)?"
+echo "Suggestion: ns=nx/2 ds=2*dx fs=fx"
+read fs
+read ns 
+read ds
+echo ""
+
+echo "Kirchhoff Migration Parameters:"
+echo "Please check if you have thinned raw data!"
+echo "Absolute offset maximum:"
+read offmax
+echo "Sampling interval of mid points (trace header d2):"
+read dxm
+echo "Far-offset increment in CIG output (in metre with the sign):"
+read off0
+echo "Offset increments in CIG output (in metre with the sign):"
+read doff
+echo "Number of offsets in CIG output:"
+read noff
+echo "Maximumnumber of input traces to be migrated:"
+echo "Note:equal or greater than the number trace in the seismic data"
+echo "Suggest greater or you may encounter failure in allocating memroy"
+read ntr
+
+echo "What do you want to name the output files of current migration"
+read VERSION
+echo "The output stacked SU files will be named with the "${VERSION}""
 outputsu="stackPSDM_${VERSION}.su"
 outputsu_no="stackPSDM_${VERSION}_no1000"
 
-#########################################
-# Sample parameters
-#########################################
-nt=1626
-dt=0.004
-
-#########################################
-# Velocity model parameters (grid sizes)
-#########################################
-nz=251
-dz=20
-fz=0
-nx=1201
-dx=25
-fx=65000
-
-#########################################
+# ==========================================
+# Or you can hard-core it
+# ==========================================
+#inputsu="../MEDOC9_compart_mute100.su"
+#vfile="vfile_m0_c1.52k"
+#
+##Output files names
+#VERSION="l0_mute100"
+#outputsu="stackPSDM_${VERSION}.su"
+#outputsu_no="stackPSDM_${VERSION}_no1000"
+## Sample parameters
+#nt=1626
+#dt=0.004
+## Velocity model parameters (grid sizes)
+#nz=251
+#dz=20
+#fz=0
+#nx=1201
+#dx=25
+#fx=65000
+#
 # Ray trace parameters (shot parameters)
-#########################################
-#ns=2547
+#fs=65000
+#ns=601
 #ds=50
-fs=65000
-ns=601
-ds=50
+#
+# Migration Parameters, Channels, check by surange<inputsu
+#off0=-1552
+#doff=25
+#noff=55
+#dxm=12.5
+#offmax=1552
+#ntr=28000
+#
+## Velocity model file parameters
+#xini=65000
+#xfin=95000
 
-#########################################
-# Migration Parameters
-# Channels 1 - ?
-# check by surange<inputsu
-#########################################
-off0=-1552
-doff=25
-noff=55
-dxm=12.5
-offmax=1552
-ntr=28000
-
-# --------------------------------------
-# Generating uniform velocity model
-# --------------------------------------
-xini=65000
-xfin=95000
+# ==============================================================================
+# STAGE 1: Pre-processing: Set grid, generate vfile, ray tracing, amplitude correction(optional) 
+# ==============================================================================
+echo ">>> STAGE 1: Pre-processing..."
+echo "--> Generating 2D uniform velocity model..."
 echo $xini 0 >input_unif
 echo $xfin 0 >>input_unif
 echo 1.0 -99999 >>input_unif
-
 unif2 < input_unif > pvfile  ninf=0 npmax=5000 nz=$nz \
  dz=$dz fz=$fz nx=$nx dx=$dx fx=$fx v00=1
+echo "   maximum number of points on interfaces is $npmax"
 
-# --------------------------------------
-# Ray trace
-# --------------------------------------
+echo "--> Performing 2D ray tracing..."
 rayt2d <"$vfile" nt=$nt dt=$dt fz=$fz nz=$nz dz=$dz fx=$fx nx=$nx dx=$dx aperx=10000 \
  fxo=$fx nxo=$nx dxo=$dx fzo=$fz nzo=$nz dzo=$dz fxs=$fs nxs=$ns dxs=$ds \
  fa=-90 na=91 \
  verbose=1 npv=1 tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
+echo "   the ray tracing aperature in x-direction is $aperx"
+echo "   the first take-off angle of rays (degrees) is $fa"
+echo "   the number of rays is $na"
 
-# --------------------------------------
-# Amplitude correction
-# --------------------------------------
-sudivcor < "$inputsu" trms=0.0 vrms=1510 > input_cor.su
+# Amplitude correction is optional. If not pleae keep "cp "$inputsu" input_cor.su" and comment others
+echo "--> Applying amplitude correction..."
+sudivcor < "$inputsu" trms=0.0 vrms=1500 > input_cor.su
 # cp "$inputsu" input_cor.su
 
 # --------------------------------------
