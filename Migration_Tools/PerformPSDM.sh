@@ -146,6 +146,7 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 
 # ==============================================================================
 # STAGE 1: Pre-processing: Set grid, generate vfile, ray tracing, amplitude correction(optional) 
+# You can change the parameters but before change, please check the tutorial documents
 # ==============================================================================
 echo ">>> STAGE 1: Pre-processing..."
 echo "--> Generating 2D uniform velocity model..."
@@ -154,45 +155,48 @@ echo $xfin 0 >>input_unif
 echo 1.0 -99999 >>input_unif
 unif2 < input_unif > pvfile  ninf=0 npmax=5000 nz=$nz \
  dz=$dz fz=$fz nx=$nx dx=$dx fx=$fx v00=1
-echo "   maximum number of points on interfaces is $npmax"
+echo "   - maximum number of points on interfaces is $npmax"
 
 echo "--> Performing 2D ray tracing..."
 rayt2d <"$vfile" nt=$nt dt=$dt fz=$fz nz=$nz dz=$dz fx=$fx nx=$nx dx=$dx aperx=10000 \
  fxo=$fx nxo=$nx dxo=$dx fzo=$fz nzo=$nz dzo=$dz fxs=$fs nxs=$ns dxs=$ds \
  fa=-90 na=91 \
  verbose=1 npv=1 tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
-echo "   the ray tracing aperature in x-direction is $aperx"
-echo "   the first take-off angle of rays (degrees) is $fa"
-echo "   the number of rays is $na"
+echo "   - the ray tracing aperature in x-direction is $aperx"
+echo "   - the first take-off angle of rays (degrees) is $fa"
+echo "   - the number of rays is $na"
 
 # Amplitude correction is optional. If not pleae keep "cp "$inputsu" input_cor.su" and comment others
 echo "--> Applying amplitude correction..."
 sudivcor < "$inputsu" trms=0.0 vrms=1500 > input_cor.su
 # cp "$inputsu" input_cor.su
 
-# --------------------------------------
-# Kirchhoff PSDM
-# --------------------------------------
+# ==============================================================================
+# STAGE 2: Parallel Migration on a GLOBAL Grid
+# The default migration lateral aperture is: 0.5*nxt*dxt
+# The default migration angle aperature from vertical is 60
+# ==============================================================================
+echo ">>> STAGE 2: Performing Migration..."
 sukdmig2d < input_cor.su offmax=$offmax dxm=$dxm >kd.data_complete fzt=$fz nzt=$nz dzt=$dz fxt=$fx nxt=$nx dxt=$dx\
  aperx=10000 angmax=90 \
  fs=$fs ns=$ns ds=$ds ntr=$ntr off0=$off0 noff=$noff doff=$doff ttfile=tfile mtr=100\
  verbose=1 npv=1 tvfile=tvfile csfile=csfile outfile1=outfile1_complete
+echo "   - the migration lateral aperature is $aperx "
+echo "   - the	migration angle aperature from vertical is $angmax"
 
-# --------------------------------------
-# Stack CIG images (with near-offset)
-# --------------------------------------
+# ==============================================================================
+# STAGE 3: Merging, Sorting Results, Final Stacking, and Cleanup
+# ==============================================================================
 suwind < kd.data_complete | sustack > $outputsu
 suwind < kd.data_complete key=offset min=-1000 | sustack > $outputsu_no
 
 echo ">>> Migration outputs:"
-echo "    kd.data_complete   (prestack depth migrated gathers)"
-echo "    outfile1_complete  (auxiliary output)"
-echo "    stackPSDM.su       (stacked PSDM section)"
-echo "    stackPSDM_no.su    (near offset)"
+echo "    - kd.data_complete   (prestack depth migrated gathers)"
+echo "    - outfile1_complete  (auxiliary output)"
+echo "    - ${outputsu}        (stacked PSDM section)"
+echo "    - ${outputsu_no}     (stacked only near offset)"
 
-# -----------------------------
-# Clean tmp files
-# -----------------------------
+echo "--> Cleaning up calculation temporary files..."  
 rm -f input_unif pvfile csfile tvfile
 rm -f input_cor.su
 rm -f tfile
@@ -200,5 +204,6 @@ rm -f tfile
 echo ">>> PSDM processing completed successfully!"
 echo "--- The input SU file is [$inputsu]"
 echo "--- The input velocity model (vfile) is [$vfile]"
+echo ">>>>>>>> Wish you a great result! <<<<<<<<"
 
 exit 0
