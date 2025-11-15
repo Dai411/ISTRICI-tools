@@ -4,7 +4,7 @@
 # Tool: Conduct Kirchhoff Migration 
 # Author: Lining YANG @CNR-ISMAR, Bologna
 # License: BSD 3-Clause License
-# Last Modified: 2025-11-13 20:30
+# Last Modified: 2025-11-15 22:30
 #
 # Description:
 #    This script conduct the 2 Dimensional Pre-stack Krichhoff Depth Migration 
@@ -22,16 +22,23 @@
 #    - Optional SU tools: sudivcor (optional), sustack
 #
 # Suggestion:
-#    Read the help documents for the key SU tools in understanding how key
-#    parameters shoud be set and manually changed for depth migration.
+#    Read the tutorial documents for the key SU tools in understanding how key
+#    parameters shoud be set and manually changed for depth migration. Type 
+#    the above tools command to see the information.
 #
-#
+# Note:
+#    - Memory requirements is about:			
+#    	 = [ns*nxt*nzt+noff*nxo*nzo+4*nr*nzt+5*nxt*nzt+npa*(2*ns*nxt*nzt
+#      +noff*nxo*nzo+4*nxt*nzt)]*4 bytes				
+#      where nr = 1+min(nxt*dxt,0.5*offmax+aperx)/dxo. 
+#    - The real used memory can be checked by calculating the tota lvolume of 
+#      midlle files: input_unif, pvfile, csfile, tvfile, tfile
+#    - The current Migration can only utilized single-core. The nulti-core 
+#      Migration scripts is listed in this folder.   
 #
 # Original version:
 #    - https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/PerformPSDM
-#
 # ==========================================
-
 set -e
 set -u
 
