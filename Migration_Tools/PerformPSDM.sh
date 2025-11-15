@@ -37,13 +37,13 @@
 #
 # Original version:
 #    - https://github.com/Dai411/ISTRICI-OGS/blob/main/TRAD_V1/PerformPSDM
-# ==========================================
+# ============================================================================ #
 set -e
 set -u
 
-# ==========================================
+# ============================================================================ #
 # STAGE0: Read User inputs and grid parameters
-# ==========================================
+# ============================================================================ #
 echo ">>> STAGE 0: SET PARAMETERS"
 echo "Which is your input SU data?"
 read inputsu
@@ -105,9 +105,9 @@ echo "The output stacked SU files will be named with the "${VERSION}""
 outputsu="stackPSDM_${VERSION}.su"
 outputsu_no="stackPSDM_${VERSION}_no1000"
 
-# ==========================================
+# ============================================================================ #
 # Or you can hard-core it
-# ==========================================
+# ============================================================================ #
 #inputsu="../MEDOC9_compart_mute100.su"
 #vfile="vfile_m0_c1.52k"
 #
@@ -143,10 +143,10 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 #xini=65000
 #xfin=95000
 
-# ==============================================================================
+# ============================================================================ #
 # STAGE 1: Pre-processing: Set grid, generate vfile, ray tracing, amplitude correction(optional) 
 # You can change the parameters but before change, please check the tutorial documents
-# ==============================================================================
+# ============================================================================ #
 echo ">>> STAGE 1: Pre-processing..."
 echo "--> Generating 2D uniform velocity model..."
 echo $xini 0 >input_unif
@@ -170,11 +170,11 @@ echo "--> Applying amplitude correction..."
 sudivcor < "$inputsu" trms=0.0 vrms=1500 > input_cor.su
 # cp "$inputsu" input_cor.su
 
-# ==============================================================================
+# ============================================================================ #
 # STAGE 2: Parallel Migration on a GLOBAL Grid
 # The default migration lateral aperture is: 0.5*nxt*dxt
 # The default migration angle aperature from vertical is 60
-# ==============================================================================
+# ============================================================================ #
 echo ">>> STAGE 2: Performing Migration..."
 sukdmig2d < input_cor.su offmax=$offmax dxm=$dxm >kd.data_complete fzt=$fz nzt=$nz dzt=$dz fxt=$fx nxt=$nx dxt=$dx\
  aperx=10000 angmax=90 \
@@ -183,9 +183,9 @@ sukdmig2d < input_cor.su offmax=$offmax dxm=$dxm >kd.data_complete fzt=$fz nzt=$
 echo "   - the migration lateral aperature is $aperx "
 echo "   - the	migration angle aperature from vertical is $angmax"
 
-# ==============================================================================
+# ============================================================================ #
 # STAGE 3: Merging, Sorting Results, Final Stacking, and Cleanup
-# ==============================================================================
+# ============================================================================ #
 suwind < kd.data_complete | sustack > $outputsu
 suwind < kd.data_complete key=offset min=-1000 | sustack > $outputsu_no
 
