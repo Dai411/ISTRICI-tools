@@ -144,8 +144,9 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 #xfin=95000
 
 # ============================================================================ #
-# STAGE 1: Pre-processing: Set grid, generate vfile, ray tracing, amplitude correction(optional) 
-# You can change the parameters but before change, please check the tutorial documents
+# STAGE 1: Pre-processing: 
+#     Set grid, generate vfile, ray tracing, amplitude correction(optional) 
+# You can change the parameters but please check the tutorial documents before
 # ============================================================================ #
 echo ">>> STAGE 1: Pre-processing..."
 echo "--> Generating 2D uniform velocity model..."
@@ -157,29 +158,37 @@ unif2 < input_unif > pvfile  ninf=0 npmax=5000 nz=$nz \
 echo "   - maximum number of points on interfaces is $npmax"
 
 echo "--> Performing 2D ray tracing..."
-rayt2d <"$vfile" nt=$nt dt=$dt fz=$fz nz=$nz dz=$dz fx=$fx nx=$nx dx=$dx aperx=10000 \
+rayt2d <"$vfile" \
+ nt=$nt dt=$dt fz=$fz nz=$nz dz=$dz fx=$fx nx=$nx dx=$dx \
  fxo=$fx nxo=$nx dxo=$dx fzo=$fz nzo=$nz dzo=$dz fxs=$fs nxs=$ns dxs=$ds \
- fa=-90 na=91 \
- verbose=1 npv=1 tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
+ fa=-90 na=91 aperx=10000 \
+ verbose=1 npv=1 \
+ tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
 echo "   - the ray tracing aperature in x-direction is $aperx"
 echo "   - the first take-off angle of rays (degrees) is $fa"
 echo "   - the number of rays is $na"
 
-# Amplitude correction is optional. If not pleae keep "cp "$inputsu" input_cor.su" and comment others
+# Amplitude correction is optional
+# If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
 echo "--> Applying amplitude correction..."
 sudivcor < "$inputsu" trms=0.0 vrms=1500 > input_cor.su
 # cp "$inputsu" input_cor.su
 
 # ============================================================================ #
 # STAGE 2: Parallel Migration on a GLOBAL Grid
-# The default migration lateral aperture is: 0.5*nxt*dxt
-# The default migration angle aperature from vertical is 60
+#     - default migration lateral aperture is: 0.5*nxt*dxt
+#     - The default migration angle aperature from vertical is 60
+#     - The defaultprint verbal information at every mtr traces is 100
 # ============================================================================ #
 echo ">>> STAGE 2: Performing Migration..."
-sukdmig2d < input_cor.su offmax=$offmax dxm=$dxm >kd.data_complete fzt=$fz nzt=$nz dzt=$dz fxt=$fx nxt=$nx dxt=$dx\
- aperx=10000 angmax=90 \
- fs=$fs ns=$ns ds=$ds ntr=$ntr off0=$off0 noff=$noff doff=$doff ttfile=tfile mtr=100\
- verbose=1 npv=1 tvfile=tvfile csfile=csfile outfile1=outfile1_complete
+sukdmig2d offmax=$offmax dxm=$dxm \
+    fzt=$fz nzt=$nz dzt=$dz fxt=$fx nxt=$nx dxt=$dx \
+    aperx=10000 angmax=90 \
+    fs=$fs ns=$ns ds=$ds ntr=$ntr off0=$off0 noff=$noff doff=$doff \
+    mtr=100 verbose=1 npv=1 \
+    ttfile=tfile tvfile=tvfile csfile=csfile outfile1=outfile1_complete \
+    < input_cor.su > kd.data_complete
+ 
 echo "   - the migration lateral aperature is $aperx "
 echo "   - the	migration angle aperature from vertical is $angmax"
 
