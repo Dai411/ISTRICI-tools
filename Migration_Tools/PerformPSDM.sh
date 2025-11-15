@@ -42,7 +42,7 @@ set -e
 set -u
 
 # ============================================================================ #
-# STAGE0: Read User inputs and grid parameters
+# STAGE0: Read User's inputs and grid parameters
 # ============================================================================ #
 echo ">>> STAGE 0: SET PARAMETERS"
 echo "Which is your input SU data?"
@@ -106,12 +106,12 @@ outputsu="stackPSDM_${VERSION}.su"
 outputsu_no="stackPSDM_${VERSION}_no1000"
 
 # ============================================================================ #
-# Or you can hard-core it
+# STAGE0： Or you can hard-core it
 # ============================================================================ #
 #inputsu="../MEDOC9_compart_mute100.su"
 #vfile="vfile_m0_c1.52k"
-#
-##Output files names
+
+## Output files names
 #VERSION="l0_mute100"
 #outputsu="stackPSDM_${VERSION}.su"
 #outputsu_no="stackPSDM_${VERSION}_no1000"
@@ -125,12 +125,12 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 #nx=1201
 #dx=25
 #fx=65000
-#
+
 # Ray trace parameters (shot parameters)
 #fs=65000
 #ns=601
 #ds=50
-#
+
 # Migration Parameters, Channels, check by surange<inputsu
 #off0=-1552
 #doff=25
@@ -138,7 +138,7 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 #dxm=12.5
 #offmax=1552
 #ntr=28000
-#
+
 ## Velocity model file parameters
 #xini=65000
 #xfin=95000
