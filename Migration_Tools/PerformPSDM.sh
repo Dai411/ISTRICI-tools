@@ -32,7 +32,7 @@
 #      where nr = 1+min(nxt*dxt,0.5*offmax+aperx)/dxo. 
 #    - The real used memory can be checked by calculating the tota lvolume of 
 #      midlle files: input_unif, pvfile, csfile, tvfile, tfile
-#    - The current Migration can only utilized single-core. The nulti-core 
+#    - The current Migration can only utilized single-core. The multi-core 
 #      Migration scripts is listed in this folder.   
 #
 # Original version:
