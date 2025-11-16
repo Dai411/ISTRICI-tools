@@ -171,9 +171,16 @@ echo "   - the number of rays is $na"
 
 # Amplitude correction is optional
 # If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
-echo "--> Applying amplitude correction..."
-sudivcor < "$inputsu" trms=0.0 vrms=1500 > input_cor.su
-# cp "$inputsu" input_cor.su
+echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N)"
+read do_divcor
+
+if [[ "$do_divcor" =~ ^[Yy]$ ]]; then
+  echo "--> Applying amplitude correction..."
+  sudivcor < "$inputsu" trms=0.0 vrms=1500 > input.su
+else
+  echo "--> Skipping amplitude correction..."
+  cp "$inputsu" input.su
+fi
 
 # ============================================================================ #
 # STAGE 2: Parallel Migration on a GLOBAL Grid
@@ -189,7 +196,7 @@ sukdmig2d offmax=$offmax dxm=$dxm \
     mtr=100 verbose=1 npv=1 \
     ttfile=tfile tvfile=tvfile csfile=csfile \
     outfile1=outfile1_complete \
-    < input_cor.su > kd.data_complete
+    < input.su > kd.data_complete
  
 echo "   - the migration lateral aperature is $aperx "
 echo "   - the	migration angle aperature from vertical is $angmax"
@@ -208,7 +215,7 @@ echo "    - ${outputsu_no}     (stacked only near offset)"
 
 echo "--> Cleaning up calculation temporary files..."  
 rm -f input_unif pvfile csfile tvfile
-rm -f input_cor.su
+rm -f input.su
 rm -f tfile
 
 echo ">>> PSDM processing completed successfully!"
