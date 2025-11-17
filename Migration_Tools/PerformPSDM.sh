@@ -211,7 +211,7 @@ echo ">>> Migration outputs:"
 echo "    - kd.data_complete   (prestack depth migrated gathers)"
 echo "    - outfile1_complete  (auxiliary output)"
 echo "    - ${outputsu}        (stacked PSDM section)"
-echo "    - ${outputsu_no}     (stacked only near offset)"
+echo "    - ${outputsu_no}     (stacked only near offset < 1000)"
 
 echo "--> Cleaning up calculation temporary files..."  
 rm -f input_unif pvfile csfile tvfile
