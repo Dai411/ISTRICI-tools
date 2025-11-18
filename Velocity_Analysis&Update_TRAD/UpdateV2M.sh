@@ -4,6 +4,10 @@
 # Version: 5.1 (Enhanced File Validation)
 # Author: Lining YANG, CNR-ISMAR Bologna
 # Date: 2025-07-04 20:00
+# 
+# Note:
+#   The original version of the script is:
+#    - https://github.com/utinivella/ISTRICI/blob/main/TRAD_V1/UPDATEvelocity2marinedata_detail
 #
 # Description: 
 #   Comprehensive workflow for updating marine seismic velocity models
