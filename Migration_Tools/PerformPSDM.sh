@@ -28,8 +28,10 @@
 # Note:
 #    - Memory requirements is about:			
 #    	 = [ns*nxt*nzt+noff*nxo*nzo+4*nr*nzt+5*nxt*nzt+npa*(2*ns*nxt*nzt
-#      +noff*nxo*nzo+4*nxt*nzt)]*4 bytes				
+#        +noff*nxo*nzo+4*nxt*nzt)]*4 bytes				
 #      where nr = 1+min(nxt*dxt,0.5*offmax+aperx)/dxo. 
+#        Please note that it should be "npv" instead of "npa" which is a typo in
+#      the tutorial document.
 #    - The real used memory can be checked by calculating the tota lvolume of 
 #      midlle files: input_unif, pvfile, csfile, tvfile, tfile
 #    - The current Migration can only utilized single-core. The multi-core 
