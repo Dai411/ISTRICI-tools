@@ -7,6 +7,9 @@
 # Version:  1.3
 # License:  BSD 3-Clause License
 # =============================================================================
+# Note:
+#   The original version of this script is:
+#    - https://github.com/utinivella/ISTRICI/blob/main/TRAD_V1/UPDATEvelocity_detail
 #
 # Description:
 #   This script updates seismic velocity models using residual moveout analysis.
