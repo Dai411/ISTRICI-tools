@@ -191,14 +191,14 @@ fi
 #     - The defaultprint verbal information at every mtr traces is 100
 # ============================================================================ #
 echo ">>> STAGE 2: Performing Migration..."
-sukdmig2d offmax=$offmax dxm=$dxm \
+sukdmig2d < input.su \
+    offmax=$offmax dxm=$dxm \
     fzt=$fz nzt=$nz dzt=$dz fxt=$fx nxt=$nx dxt=$dx \
     aperx=10000 angmax=90 \
     fs=$fs ns=$ns ds=$ds ntr=$ntr off0=$off0 noff=$noff doff=$doff \
     mtr=100 verbose=1 npv=1 \
     ttfile=tfile tvfile=tvfile csfile=csfile \
-    outfile1=outfile1_complete \
-    < input.su > kd.data_complete
+    outfile=kd.data_complete outfile1=outfile1_complete     
  
 echo "   - the migration lateral aperature is $aperx "
 echo "   - the	migration angle aperature from vertical is $angmax"
