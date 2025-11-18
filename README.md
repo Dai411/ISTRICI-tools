@@ -9,7 +9,7 @@ or DOI: https://doi.org/10.1016/j.cageo.2023.105458 cited as
 
 `Tinivella, U. and Giustiniani, M., 2023. ISTRICI–Tools for facilitating seismic depth imaging and velocity analysis with seismic unix. Computers & Geosciences, 180, p.105458.`
     
-The original `Readme_ISTRICI` file is seen at the below link: https://github.com/Dai411/ISTRICI-OGS/blob/main/README_ISTRICI  
+The original `Readme_ISTRICI` file is seen at the below link: https://github.com/utinivella/ISTRICI  
 
 ## The trigger of this projects  
 
