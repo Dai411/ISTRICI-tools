@@ -201,7 +201,7 @@ sukdmig2d < input.su \
     outfile=kd.data_complete outfile1=outfile1_complete     
  
 echo "   - the migration lateral aperature is $aperx "
-echo "   - the	migration angle aperature from vertical is $angmax"
+echo "   - the migration angle aperature from vertical is $angmax"
 
 # ============================================================================ #
 # STAGE 3: Merging, Sorting Results, Final Stacking, and Cleanup
