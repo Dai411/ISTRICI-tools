@@ -4,8 +4,12 @@
 # Version: 4.0 (Pure Shell Implementation)
 # Author: Lining YANG, CNR-ISMAR Bologna
 # Date: 2025-07-01
-# Last Modified: 2025-07-21
+# Last Modified: 2025-11-18
 # 
+# Note:
+#   The original version of this scrip is here:
+#     - https://github.com/utinivella/ISTRICI/blob/main/TRAD_V1/VELOCITYANALISYS
+#
 # Description: 
 #   This script performs residual moveout analysis on seismic Common Image Gathers (CIGs).
 #   It processes seismic data to estimate velocity perturbations and update velocity models.
