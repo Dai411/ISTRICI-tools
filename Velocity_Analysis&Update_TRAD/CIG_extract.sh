@@ -7,6 +7,10 @@
 # Modified:  2025-07-15
 # License:   BSD-3-Clause
 # ==============================================================================
+# Note:
+#    The original version of this script is:
+#     - https://github.com/utinivella/ISTRICI/blob/main/TRAD_V1/CIGextraction
+#
 # Description: Extracts CDP traces from seismic data files and creates
 #              output files with simplified names. Supports progress animation.
 #
