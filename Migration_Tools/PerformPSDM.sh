@@ -26,6 +26,9 @@
 #    the above tools command to see the information.
 #
 # Note:
+#    - For tools unif2, rayt2d and sukmig2d, verbose=1 allows print the work
+#      information on the console; For tools rayt2d and sukmig2d, npv=1 gave 
+#      the output files for further velocity analysis
 #    - Memory requirements is about:			
 #    	 = [ns*nxt*nzt+noff*nxo*nzo+4*nr*nzt+5*nxt*nzt+npa*(2*ns*nxt*nzt
 #        +noff*nxo*nzo+4*nxt*nzt)]*4 bytes				
