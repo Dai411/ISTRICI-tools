@@ -132,8 +132,8 @@ read ntr
 echo "What do you want to name the output files of current migration"
 read VERSION
 echo "The output stacked SU files will be named with the "${VERSION}""
-outputsu="stackPSDM_${VERSION}.su"
-outputsu_no="stackPSDM_${VERSION}_no1000"
+outputsu_full_stack="stackPSDM_${VERSION}.su"
+outputsu_no_satck="stackPSDM_${VERSION}_no_stack"
 
 # ============================================================================ #
 # STAGE0： Or you can hard-core it
@@ -177,6 +177,9 @@ outputsu_no="stackPSDM_${VERSION}_no1000"
 # STAGE 1: Pre-processing: 
 #     Set grid, generate vfile, ray tracing, amplitude correction(optional) 
 # Parameters can be set but please check the tutorial documents before
+#     - The first angle and last angle are fa and na, the default step is 2°
+#       or manually set by "da="
+#     - The tray apperture can be set by "aperx=" 
 # ============================================================================ #
 echo ">>> STAGE 1: Pre-processing..."
 echo "--> Generating 2D uniform velocity model..."
@@ -214,9 +217,9 @@ fi
 
 # ============================================================================ #
 # STAGE 2: Parallel Migration on a GLOBAL Grid
-#     - default migration lateral aperture is: 0.5*nxt*dxt
-#     - The default migration angle aperature from vertical is 60
-#     - The defaultprint verbal information at every mtr traces is 100
+#     - default migration lateral aperture is: 0.5*nxt*dxt (or set aperx= )
+#     - The default migration angle aperature from vertical is 60 (or angmax=)
+#     - The defaultprint verbal information at every mtr traces is 100 (or mtr=)
 # ============================================================================ #
 echo ">>> STAGE 2: Performing Migration..."
 sukdmig2d < input.su \
@@ -234,14 +237,14 @@ echo "   - the migration angle aperature from vertical is $angmax"
 # ============================================================================ #
 # STAGE 3: Merging, Sorting Results, Final Stacking, and Cleanup
 # ============================================================================ #
-suwind < kd.data_complete | sustack > $outputsu
-suwind < kd.data_complete key=offset min=-1000 | sustack > $outputsu_no
+suwind < kd.data_complete | sustack > $outputsu_full_stack
+suwind < kd.data_complete key=offset min=-1000 | sustack > $outputsu_no_stack
 
 echo ">>> Migration outputs:"
-echo "    - kd.data_complete   (prestack depth migrated gathers)"
-echo "    - outfile1_complete  (auxiliary output)"
-echo "    - ${outputsu}        (stacked PSDM section)"
-echo "    - ${outputsu_no}     (stacked only near offset < 1000)"
+echo "    - kd.data_complete               (prestack depth migrated gathers)"
+echo "    - outfile1_complete              (auxiliary output)"
+echo "    - ${$outputsu_full_stack}        (stacked PSDM section)"
+echo "    - $outputsu_no_stack             (stacked only near offset < 1000)"
 
 echo "--> Cleaning up calculation temporary files..."  
 rm -f input_unif pvfile csfile tvfile
