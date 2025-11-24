@@ -40,6 +40,8 @@
 #    - tfile: xmovie< tfile n1= n2= loop=1 title="Traveltime Tables" &
 #    Note: n1: verticle sample numbers; 
 #          n2: horizontal sample numbers;
+#              If forget n1 or n2, these values can be tried by checking the 
+#            the size of the file, which are n1*n2*traces*4(float format) bytes  
 #          lengend: scale bar on 
 #          loop = 1 runs the movie in a continuous loop
 #
