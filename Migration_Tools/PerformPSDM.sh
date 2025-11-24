@@ -196,7 +196,7 @@ rayt2d <"$vfile" \
     verbose=1 npv=1 \
     tfile=tfile pvfile=pvfile csfile=csfile tvfile=tvfile
 echo "   - the ray tracing aperature in x-direction is $aperx"
-echo "   - the first take-off angle of rays (degrees) is $fa"
+echo "   - the first take-off angle of rays is from $fa to $na degrees"
 echo "   - the number of rays is $na"
 
 # Amplitude correction is optional
