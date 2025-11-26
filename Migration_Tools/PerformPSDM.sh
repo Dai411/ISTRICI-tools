@@ -35,12 +35,12 @@
 # Visulization:
 #    - *.su files: suximage, suxwigb 
 #                  or 
-#                  suwind < file key= min= max= |  suximage perc=
+#                  suwind < *.su key= min= max= |  suximage perc=
 #    - vfile: ximage< vfile n1= n2= legend=1 title="Input Velocity Model" &
 #    - tfile: xmovie< tfile n1= n2= loop=1 title="Traveltime Tables" &
 #    Note: n1: verticle sample numbers; 
 #          n2: horizontal sample numbers;
-#              If forget n1 or n2, these values can be tried by checking the 
+#            If forget n1 or n2, these values can be tried by checking the 
 #            the size of the file, which are n1*n2*traces*4(float format) bytes  
 #          lengend: scale bar on 
 #          loop = 1 runs the movie in a continuous loop
@@ -238,13 +238,15 @@ echo "   - the migration angle aperature from vertical is $angmax"
 # STAGE 3: Merging, Sorting Results, Final Stacking, and Cleanup
 # ============================================================================ #
 suwind < kd.data_complete | sustack > $outputsu_full_stack
-suwind < kd.data_complete key=offset min=-1000 | sustack > $outputsu_no_stack
+no_stack_value=-1000
+suwind < kd.data_complete key=offset min=$no_stack_value \
+       | sustack > $outputsu_no_stack
 
 echo ">>> Migration outputs:"
-echo "    - kd.data_complete               (prestack depth migrated gathers)"
-echo "    - outfile1_complete              (auxiliary output)"
-echo "    - ${$outputsu_full_stack}        (stacked PSDM section)"
-echo "    - $outputsu_no_stack             (stacked only near offset < 1000)"
+echo "    - kd.data_complete         (prestack depth migrated gathers)"
+echo "    - outfile1_complete        (auxiliary output)"
+echo "    - ${$outputsu_full_stack}  (stacked PSDM section)"
+echo "    - $outputsu_no_stack       (stacked near offset < $no_stack_value)"
 
 echo "--> Cleaning up calculation temporary files..."  
 rm -f input_unif pvfile csfile tvfile
