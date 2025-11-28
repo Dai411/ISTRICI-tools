@@ -173,6 +173,8 @@ outputsu_no_satck="stackPSDM_${VERSION}_no_stack"
 #xini=65000
 #xfin=95000
 
+echo ">>> Check Input Files"
+
 # ============================================================================ #
 # STAGE 1: Pre-processing: 
 #     Set grid, generate vfile, ray tracing, amplitude correction(optional) 
