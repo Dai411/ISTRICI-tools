@@ -136,7 +136,7 @@ outputsu_full_stack="stackPSDM_${VERSION}.su"
 outputsu_no_satck="stackPSDM_${VERSION}_no_stack"
 
 # ============================================================================ #
-# STAGE0： Or you can hard-core it
+# STAGE 0： Or you can hard-core it
 # ============================================================================ #
 #inputsu="../MEDOC9_compart_mute100.su"
 #vfile="vfile_m0_c1.52k"
@@ -173,6 +173,9 @@ outputsu_no_satck="stackPSDM_${VERSION}_no_stack"
 #xini=65000
 #xfin=95000
 
+# ============================================================================ #
+# STAGE 0.1: Check the input files and Input parameters
+# ============================================================================ #
 echo ">>> Check Input Files"
 
 # ============================================================================ #
