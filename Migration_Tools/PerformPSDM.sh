@@ -174,13 +174,32 @@ outputsu_no_satck="stackPSDM_${VERSION}_no_stack"
 #xfin=95000
 
 # ============================================================================ #
-# STAGE 0.1: Check the input files and Input parameters
+# STAGE 0.1: Check the input files and Input parameters,
+#            Conduct amplitude correction(optional) 
 # ============================================================================ #
 echo ">>> Check Input Files"
+[ -f "$vfile" ] || { echo "❌ Error: File does not exist $vfile"; exit 1; }
+echo "--> vfile: $vfile detected!"
+[ -f "$inputsu" ] || { echo "❌ Error: File does not exist $inputsu"; exit 1; }
+echo ""--> Input SU file: $inputsu detected!" 
+
+echo ">>> Amplitude Correction?"
+# Amplitude correction is optional
+# If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
+echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N)"
+read do_divcor
+
+if [[ "$do_divcor" =~ ^[Yy]$ ]]; then
+  echo "--> Applying amplitude correction..."
+  sudivcor < "$inputsu" trms=0.0 vrms=1500 > input.su
+else
+  echo "--> Skipping amplitude correction..."
+  cp "$inputsu" input.su
+fi
 
 # ============================================================================ #
 # STAGE 1: Pre-processing: 
-#     Set grid, generate vfile, ray tracing, amplitude correction(optional) 
+#     Set grid, generate uniform vfile, ray tracing
 # Parameters can be set but please check the tutorial documents before
 #     - The first angle and last angle are fa and na, the default step is 2°
 #       or manually set by "da="
@@ -206,19 +225,6 @@ rayt2d <"$vfile" \
 echo "   - the ray tracing aperature in x-direction is $aperx"
 echo "   - the first take-off angle of rays is from $fa to $na degrees"
 echo "   - the number of rays is $na"
-
-# Amplitude correction is optional
-# If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
-echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N)"
-read do_divcor
-
-if [[ "$do_divcor" =~ ^[Yy]$ ]]; then
-  echo "--> Applying amplitude correction..."
-  sudivcor < "$inputsu" trms=0.0 vrms=1500 > input.su
-else
-  echo "--> Skipping amplitude correction..."
-  cp "$inputsu" input.su
-fi
 
 # ============================================================================ #
 # STAGE 2: Parallel Migration on a GLOBAL Grid
