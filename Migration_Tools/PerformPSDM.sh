@@ -15,6 +15,10 @@
 # Usage: 
 #    chmod +x PerformPSDM.sh
 #    ./PerformPSDM.sh
+#    If all parameters hard-cored:
+#      nohup time ./PerformPSDM.sh > error.log 2>&1 &
+#      If need Amplitude Correction:
+#      echo "y" | nohup time ./PerformPSDM.sh > error.log 2>&1 &
 #
 # Requirements:
 #    - Key SU tools: unif2, rayt2d, sukdmig2d
