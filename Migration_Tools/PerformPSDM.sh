@@ -75,68 +75,68 @@ set -u
 # STAGE0: Read User's inputs and grid parameters
 # ============================================================================ #
 echo ">>> STAGE 0: SET PARAMETERS"
-echo "Which is your input SU data?"
-read inputsu
-echo "Which is your velocity model (Please check the size)?"
-read vfile
+echo "Which is your input SU data?"; read inputsu
+echo "Which is your velocity model (Please check the size)?"; read vfile
+echo ">>> Check Input Files"
+[ -f "$inputsu" ] || { echo "❌ Error: File does not exist $inputsu"; exit 1; }
+echo "--> Input SU file: $inputsu detected!" 
+[ -f "$vfile" ] || { echo "❌ Error: File does not exist $vfile"; exit 1; }
+echo "--> vfile: $vfile detected!"
 
 echo "Please insert the limit coordinates of the model"
-echo "left boundary: xini="
-read xini
-echo "right boundary: xfin="
-read xfin
+echo "left boundary: xini="; read xini
+echo "right boundary: xfin="; read xfin
 
 echo "What are time Sampling Parameters for ray tracing:nt, dt(s)?"
 echo "nt*dt = depth in TWTs" 
-echo "nt="
-read nt
-echo "dt(in seconds)="
-read dt
+echo "nt="; read nt
+echo "dt(in seconds)="; read dt
 
 echo "What are the Depth & Spatial Grid Parameters for vfile?"
-echo "nz,dz,fz?"
-read nz
-read dz
-read fz
-echo ""
-echo "nx,dx,fx?"
-read nx 
-read dx 
-read fx
-echo ""
+echo "nz,dz,fz?"; read nz; read dz; read fz
+echo "nx,dx,fx?"; read nx; read dx; read fx
 
 echo "What are source & Receiver Parameters (for Kirchhoff Migration)?"
-echo "Suggestion: ns=nx/2 ds=2*dx fs=fx"
-read fs
-read ns 
-read ds
-echo ""
+echo "Suggestion: ns=nx/2 ds=2*dx fs=fx"; read fs; read ns; read ds
 
 echo "Kirchhoff Migration Parameters:"
 echo "Please check if you have thinned raw data!"
-echo "Absolute offset maximum:"
-read offmax
-echo "Sampling interval of mid points (trace header d2):"
-read dxm
-echo "Far-offset increment in CIG output (in metre with the sign):"
-read off0
-echo "Offset increments in CIG output (in metre with the sign):"
-read doff
-echo "Number of offsets in CIG output:"
-read noff
+echo "Absolute offset maximum:"; read offmax
+echo "Sampling interval of mid points (trace header d2):"; read dxm
+echo "Far-offset increment in CIG output (in metre with the sign):"; read off0
+echo "Offset increments in CIG output (in metre with the sign):"; read doff
+echo "Number of offsets in CIG output:"; read noff
 echo "Maximumnumber of input traces to be migrated:"
-echo "Note:equal or greater than the number trace in the seismic data"
-echo "Suggest greater or you may encounter failure in allocating memroy"
-read ntr
+echo "Note: Equal or Greater than the number of traces in the seismic data"
+echo "You may encounter failure in allocating memroy if Equal"; read ntr
 
-echo "What do you want to name the output files of current migration"
+echo "What do you want to name the output files of current migration";
 read VERSION
 echo "The output stacked SU files will be named with the "${VERSION}""
 outputsu_full_stack="stackPSDM_${VERSION}.su"
 outputsu_no_stack="stackPSDM_${VERSION}_no_stack"
 
 # ============================================================================ #
-# STAGE 0： Or you can hard-core it
+# STAGE 0.1: Conduct amplitude correction(optional) 
+# ============================================================================ #
+echo ">>> Amplitude Correction?"
+# Amplitude correction is optional
+# If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
+
+echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N)"
+read do_divcor
+
+if [[ "$do_divcor" =~ ^[Yy]$ ]]; then
+  echo "--> Applying amplitude correction..."
+  sudivcor < "$inputsu" trms=0.0 vrms=1500 > input.su
+else
+  echo "--> Skipping amplitude correction..."
+  cp "$inputsu" input.su
+fi
+
+
+# ============================================================================ #
+# STAGE 0 - 0.1： Or you can hard-core it
 # ============================================================================ #
 #inputsu="../MEDOC9_compart_mute100.su"
 #vfile="vfile_m0_c1.52k"
@@ -173,28 +173,27 @@ outputsu_no_stack="stackPSDM_${VERSION}_no_stack"
 #xini=65000
 #xfin=95000
 
-# ============================================================================ #
-# STAGE 0.1: Check the input files and Input parameters,
-#            Conduct amplitude correction(optional) 
-# ============================================================================ #
-echo ">>> Check Input Files"
-[ -f "$vfile" ] || { echo "❌ Error: File does not exist $vfile"; exit 1; }
-echo "--> vfile: $vfile detected!"
-[ -f "$inputsu" ] || { echo "❌ Error: File does not exist $inputsu"; exit 1; }
-echo "--> Input SU file: $inputsu detected!" 
+## Check Input files
+#[[ -f "$vfile" && -f "$inputsu" ]] || { 
+#    echo "❌ Error: Missing Key inputs：Please check vfile or/and .su file"
+#    ls -l "$vfile" "$inputsu"
+#    exit 1
+#}
 
-echo ">>> Amplitude Correction?"
-# Amplitude correction is optional
-# If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
+#echo "Input files and parameters are well set"
 
-echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N)"
-read do_divcor
+if [ -z "${DO_AmpCorr:-}" ]; then
+    echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N) [5s timeout default: N]"
+    read -t 5 do_divcor || do_divcor="n"
+else
+    do_divcor="$DO_AmpCorr"
+fi
 
 if [[ "$do_divcor" =~ ^[Yy]$ ]]; then
-  echo "--> Applying amplitude correction..."
+  echo "--> [Status: ENABLED] Applying amplitude correction..."
   sudivcor < "$inputsu" trms=0.0 vrms=1500 > input.su
 else
-  echo "--> Skipping amplitude correction..."
+  echo "--> [Status: DISABLED] Skipping amplitude correction..."
   cp "$inputsu" input.su
 fi
 
