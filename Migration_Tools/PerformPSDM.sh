@@ -133,7 +133,7 @@ echo "What do you want to name the output files of current migration"
 read VERSION
 echo "The output stacked SU files will be named with the "${VERSION}""
 outputsu_full_stack="stackPSDM_${VERSION}.su"
-outputsu_no_satck="stackPSDM_${VERSION}_no_stack"
+outputsu_no_stack="stackPSDM_${VERSION}_no_stack"
 
 # ============================================================================ #
 # STAGE 0： Or you can hard-core it
@@ -181,11 +181,12 @@ echo ">>> Check Input Files"
 [ -f "$vfile" ] || { echo "❌ Error: File does not exist $vfile"; exit 1; }
 echo "--> vfile: $vfile detected!"
 [ -f "$inputsu" ] || { echo "❌ Error: File does not exist $inputsu"; exit 1; }
-echo ""--> Input SU file: $inputsu detected!" 
+echo "--> Input SU file: $inputsu detected!" 
 
 echo ">>> Amplitude Correction?"
 # Amplitude correction is optional
 # If not pleae keep "cp "$inputsu" input_cor.su" and comment the sudivor
+
 echo "--> Do you want to apply amplitude correction (sudivcor)? (y/N)"
 read do_divcor
 
@@ -256,7 +257,7 @@ suwind < kd.data_complete key=offset min=$no_stack_value \
 echo ">>> Migration outputs:"
 echo "    - kd.data_complete         (prestack depth migrated gathers)"
 echo "    - outfile1_complete        (auxiliary output)"
-echo "    - ${$outputsu_full_stack}  (stacked PSDM section)"
+echo "    - $outputsu_full_stack     (stacked PSDM section)"
 echo "    - $outputsu_no_stack       (stacked near offset < $no_stack_value)"
 
 echo "--> Cleaning up calculation temporary files..."  
