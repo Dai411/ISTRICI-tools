@@ -3,7 +3,7 @@
 # Tool: Conduct 2-Dimensional Kirchhoff Migration 
 # Author: Lining YANG @CNR-ISMAR, Bologna
 # License: BSD 3-Clause License
-# Last Modified: 2025-11-24 23:50
+# Last Modified: 2025-12-04 23:50
 #
 # Description:
 #    This script conduct the 2 Dimensional Pre-stack Krichhoff Depth Migration 
@@ -16,11 +16,11 @@
 #    chmod +x PerformPSDM.sh
 #    ./PerformPSDM.sh
 #    If all parameters hard-cored:
-#      nohup time ./PerformPSDM.sh > error.log 2>&1 &
+#        nohup time ./PerformPSDM.sh > error.log 2>&1 &
 #      If need Amplitude Correction (do_dicvor):
-#      echo "y" | nohup time ./PerformPSDM.sh > error.log 2>&1 &
+#        echo "y" | nohup time ./PerformPSDM.sh > error.log 2>&1 &
 #      or
-#      nohup time ./PerformPSDM.sh <<< "y" > error.log 2>&1 &
+#        nohup time ./PerformPSDM.sh <<< "y" > error.log 2>&1 &
 #
 # Requirements:
 #    - Key SU tools: unif2, rayt2d, sukdmig2d
