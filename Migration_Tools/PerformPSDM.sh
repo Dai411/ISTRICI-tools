@@ -15,9 +15,9 @@
 # Usage: 
 #    chmod +x PerformPSDM.sh
 #    ./PerformPSDM.sh
-#    If all parameters hard-cored:
+#    If all parameters hard-cored, I prefer run as:
 #        nohup time ./PerformPSDM.sh > error.log 2>&1 &
-#      If need Amplitude Correction (do_dicvor):
+#      If with Amplitude Correction (need to give a answer for "do_dicvor"):
 #        echo "y" | nohup time ./PerformPSDM.sh > error.log 2>&1 &
 #      or
 #        nohup time ./PerformPSDM.sh <<< "y" > error.log 2>&1 &
